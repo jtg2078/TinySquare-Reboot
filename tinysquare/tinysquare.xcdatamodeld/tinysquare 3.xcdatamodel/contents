@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="872" systemVersion="10K549" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Association" representedClassName="Association" syncable="YES">
+        <attribute name="associationId" attributeType="Integer 32" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="associationType" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="directionDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="longText" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mapDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mapStatus" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="operationHour" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pinColor" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="telephone" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="webUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="associationItem" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="AssociationItem" inverseName="association" inverseEntity="AssociationItem" indexed="YES" syncable="YES"/>
+    </entity>
+    <entity name="AssociationItem" representedClassName="AssociationItem" parentEntity="Item" syncable="YES">
+        <relationship name="association" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Association" inverseName="associationItem" inverseEntity="Association" indexed="YES" syncable="YES"/>
+    </entity>
+    <entity name="Item" representedClassName="Item" syncable="YES">
+        <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="availableTime" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="availableTimeEnd" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="availableTimeStart" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="hasAd" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="hasLocation" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="isBookmarked" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="itemId" attributeType="Integer 32" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="itemName" optional="YES" attributeType="String" defaultValueString="0" syncable="YES"/>
+        <attribute name="itemPrice" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="itemType" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="lastModified" attributeType="Date" indexed="YES" syncable="YES"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="photoId" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="region" optional="YES" attributeType="Integer 32" defaultValueString="-1" indexed="YES" syncable="YES"/>
+        <attribute name="shortText" optional="YES" attributeType="String" defaultValueString="0" syncable="YES"/>
+        <relationship name="itemImages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ItemImage" inverseName="item" inverseEntity="ItemImage" indexed="YES" syncable="YES"/>
+    </entity>
+    <entity name="ItemImage" representedClassName="ItemImage" syncable="YES">
+        <attribute name="imageHash" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imageId" attributeType="Integer 32" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="imageName" attributeType="String" syncable="YES"/>
+        <attribute name="imageType" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="sourceInfo" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sourceType" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <relationship name="item" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="itemImages" inverseEntity="Item" indexed="YES" syncable="YES"/>
+    </entity>
+    <entity name="Location" representedClassName="Location" syncable="YES">
+        <attribute name="appPromotionMessage" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="directionDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="locationId" attributeType="Integer 32" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="longText" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mapDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mapStatus" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="operationHour" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pinColor" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="priceDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="telephone" attributeType="String" syncable="YES"/>
+        <attribute name="webUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="locationItem" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="LocationItem" inverseName="location" inverseEntity="LocationItem" indexed="YES" syncable="YES"/>
+    </entity>
+    <entity name="LocationItem" representedClassName="LocationItem" parentEntity="Item" syncable="YES">
+        <relationship name="location" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Location" inverseName="locationItem" inverseEntity="Location" indexed="YES" syncable="YES"/>
+    </entity>
+    <entity name="Product" representedClassName="Product" syncable="YES">
+        <attribute name="appPromotionMessage" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="hasExpiration" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="longText" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mapDescription" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mapStatus" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pinColor" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="productId" attributeType="Integer 32" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="telephone" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="webUrl" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="productItem" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="ProductItem" inverseName="product" inverseEntity="ProductItem" indexed="YES" syncable="YES"/>
+    </entity>
+    <entity name="ProductItem" representedClassName="ProductItem" parentEntity="Item" syncable="YES">
+        <relationship name="product" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="productItem" inverseEntity="Product" indexed="YES" syncable="YES"/>
+    </entity>
+    <entity name="Recipe" representedClassName="Recipe" syncable="YES">
+        <attribute name="longText" attributeType="String" syncable="YES"/>
+        <attribute name="recipeId" attributeType="Integer 32" defaultValueString="0" indexed="YES" syncable="YES"/>
+        <attribute name="webUrl" attributeType="String" syncable="YES"/>
+        <relationship name="recipeItem" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="RecipeItem" inverseName="recipe" inverseEntity="RecipeItem" indexed="YES" syncable="YES"/>
+    </entity>
+    <entity name="RecipeItem" representedClassName="RecipeItem" parentEntity="Item" syncable="YES">
+        <relationship name="recipe" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Recipe" inverseName="recipeItem" inverseEntity="Recipe" indexed="YES" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Association" positionX="117" positionY="297" width="128" height="210"/>
+        <element name="AssociationItem" positionX="142" positionY="201" width="128" height="60"/>
+        <element name="Item" positionX="133" positionY="-180" width="128" height="315"/>
+        <element name="ItemImage" positionX="-101" positionY="228" width="128" height="150"/>
+        <element name="Location" positionX="-117" positionY="-45" width="128" height="225"/>
+        <element name="LocationItem" positionX="-83" positionY="-159" width="128" height="60"/>
+        <element name="Product" positionX="466" positionY="-135" width="128" height="195"/>
+        <element name="ProductItem" positionX="304" positionY="-69" width="128" height="60"/>
+        <element name="Recipe" positionX="376" positionY="291" width="128" height="105"/>
+        <element name="RecipeItem" positionX="340" positionY="102" width="128" height="60"/>
+    </elements>
+</model>
