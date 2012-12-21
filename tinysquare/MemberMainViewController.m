@@ -8,6 +8,7 @@
 
 #import "MemberMainViewController.h"
 #import "EditMemeberViewController.h"
+#import "CreateMemberViewController.h"
 #import "IIViewDeckController.h"
 
 @interface MemberMainViewController ()
@@ -23,13 +24,13 @@
     if(!_menuInfo)
     {
         _menuInfo =[@[
-            [@{
+            [[@{
                 @"title" : @"尚未成為會員",
                 @"icon": @"not member pic",
                 @"tap": @"none",
                 @"view": [NSNull null],
-            } mutableCopy],
-            [@{
+            } mutableCopy] autorelease],
+            [[@{
                 @"title" : @"會員資料",
                 @"icon": @"member",
                 @"tap": @"expand",
@@ -49,25 +50,25 @@
                             @"icon" : @"modify ",
                         },
                     ],
-            } mutableCopy],
-            [@{
+            } mutableCopy] autorelease],
+            [[@{
                 @"title" : @"購物記錄",
                 @"icon": @"shopping records ",
                 @"tap": @"select",
                 @"view": [NSNull null],
-            } mutableCopy],
-            [@{
+            } mutableCopy] autorelease],
+            [[@{
                 @"title" : @"意見回饋",
                 @"icon": @"opinion ",
                 @"tap": @"select",
                 @"view": [NSNull null],
-            } mutableCopy],
-            [@{
+            } mutableCopy] autorelease],
+            [[@{
                 @"title" : @"使用條款",
                 @"icon": @"clause ",
                 @"tap": @"select",
                 @"view": [NSNull null],
-            } mutableCopy],
+            } mutableCopy] autorelease],
         ] retain];
     }
     return _menuInfo;
@@ -140,8 +141,8 @@
     static NSString *cellIdentifier = @"MemberMainCellIdentifier";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                      reuseIdentifier:cellIdentifier];
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                      reuseIdentifier:cellIdentifier] autorelease];
         cell.selectionStyle = UITableViewCellSelectionStyleGray;
         cell.indentationLevel = 3;
         cell.textLabel.textColor = [UIColor darkGrayColor];
@@ -210,6 +211,15 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return 44;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(indexPath.row == 0)
+    {
+        CreateMemberViewController *cmvc = [[[CreateMemberViewController alloc] init] autorelease];
+        [self.viewDeckController rightViewPushViewControllerOverCenterController:cmvc];
+    }
 }
 
 #pragma mark - section header view

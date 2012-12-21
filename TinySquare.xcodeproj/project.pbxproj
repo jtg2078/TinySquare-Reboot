@@ -210,6 +210,12 @@
 		968FA65A15243E4E00F0F637 /* list_propicBg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 968FA65815243E4E00F0F637 /* list_propicBg@2x.png */; };
 		969237B915243FCC0021318C /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 9640E2F114AAFE0A008A2A77 /* Default.png */; };
 		969237BA15243FD50021318C /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9640E2F314AAFE0F008A2A77 /* Default@2x.png */; };
+		969429861683F47300FD9378 /* 會員註冊-02.png in Resources */ = {isa = PBXBuildFile; fileRef = 969429851683F47300FD9378 /* 會員註冊-02.png */; };
+		9694298F16844B7D00FD9378 /* UIPickerViewButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 9694298E16844B7D00FD9378 /* UIPickerViewButton.m */; };
+		9694299216844C6300FD9378 /* create member button.png in Resources */ = {isa = PBXBuildFile; fileRef = 9694299016844C6300FD9378 /* create member button.png */; };
+		9694299316844C6300FD9378 /* create member button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9694299116844C6300FD9378 /* create member button@2x.png */; };
+		969429981684540700FD9378 /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 969429951684540700FD9378 /* SVProgressHUD.bundle */; };
+		969429991684540700FD9378 /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 969429971684540700FD9378 /* SVProgressHUD.m */; };
 		9696F3E414DFBA1F00CCDFE9 /* commonBgPurple.png in Resources */ = {isa = PBXBuildFile; fileRef = 9696F3D314DFBA1F00CCDFE9 /* commonBgPurple.png */; };
 		9696F3E514DFBA1F00CCDFE9 /* commonBgPurple@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9696F3D414DFBA1F00CCDFE9 /* commonBgPurple@2x.png */; };
 		9696F3E614DFBA1F00CCDFE9 /* detailViewBgPurple.png in Resources */ = {isa = PBXBuildFile; fileRef = 9696F3D514DFBA1F00CCDFE9 /* detailViewBgPurple.png */; };
@@ -1112,6 +1118,14 @@
 		968FA65715243E4E00F0F637 /* list_propicBg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = list_propicBg.png; sourceTree = "<group>"; };
 		968FA65815243E4E00F0F637 /* list_propicBg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list_propicBg@2x.png"; sourceTree = "<group>"; };
 		9692C57B146151550056AFB7 /* tinysquare.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = tinysquare.entitlements; sourceTree = "<group>"; };
+		969429851683F47300FD9378 /* 會員註冊-02.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "會員註冊-02.png"; sourceTree = "<group>"; };
+		9694298D16844B7D00FD9378 /* UIPickerViewButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIPickerViewButton.h; sourceTree = "<group>"; };
+		9694298E16844B7D00FD9378 /* UIPickerViewButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIPickerViewButton.m; sourceTree = "<group>"; };
+		9694299016844C6300FD9378 /* create member button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "create member button.png"; sourceTree = "<group>"; };
+		9694299116844C6300FD9378 /* create member button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "create member button@2x.png"; sourceTree = "<group>"; };
+		969429951684540700FD9378 /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVProgressHUD.bundle; sourceTree = "<group>"; };
+		969429961684540700FD9378 /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
+		969429971684540700FD9378 /* SVProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressHUD.m; sourceTree = "<group>"; };
 		9696F3D314DFBA1F00CCDFE9 /* commonBgPurple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = commonBgPurple.png; sourceTree = "<group>"; };
 		9696F3D414DFBA1F00CCDFE9 /* commonBgPurple@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "commonBgPurple@2x.png"; sourceTree = "<group>"; };
 		9696F3D514DFBA1F00CCDFE9 /* detailViewBgPurple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = detailViewBgPurple.png; sourceTree = "<group>"; };
@@ -2190,6 +2204,8 @@
 		962B3D43145EAAA1000CDC9B /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				969429941684540700FD9378 /* SVProgressHUD */,
+				9694298C16844B7D00FD9378 /* UIPickerViewButton */,
 				96F9CB8F168348AD00FC8EC3 /* AQGridView */,
 				96F9CBB11683496300FC8EC3 /* ASIHTTPRequest */,
 				96F9CBF81683499E00FC8EC3 /* CustomPageControl */,
@@ -2613,6 +2629,37 @@
 				9688BB0D14B57D5B0062E142 /* Product_detail_prolist-4.jpg */,
 			);
 			name = asset;
+			sourceTree = "<group>";
+		};
+		969429841683F47300FD9378 /* create member */ = {
+			isa = PBXGroup;
+			children = (
+				9694299016844C6300FD9378 /* create member button.png */,
+				9694299116844C6300FD9378 /* create member button@2x.png */,
+				969429851683F47300FD9378 /* 會員註冊-02.png */,
+			);
+			path = "create member";
+			sourceTree = "<group>";
+		};
+		9694298C16844B7D00FD9378 /* UIPickerViewButton */ = {
+			isa = PBXGroup;
+			children = (
+				9694298D16844B7D00FD9378 /* UIPickerViewButton.h */,
+				9694298E16844B7D00FD9378 /* UIPickerViewButton.m */,
+			);
+			name = UIPickerViewButton;
+			path = Library/UIPickerViewButton;
+			sourceTree = "<group>";
+		};
+		969429941684540700FD9378 /* SVProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				969429951684540700FD9378 /* SVProgressHUD.bundle */,
+				969429961684540700FD9378 /* SVProgressHUD.h */,
+				969429971684540700FD9378 /* SVProgressHUD.m */,
+			);
+			name = SVProgressHUD;
+			path = Library/SVProgressHUD;
 			sourceTree = "<group>";
 		};
 		96A542221680E6AD0024AEFD /* member section */ = {
@@ -3813,6 +3860,7 @@
 		96F9CEAB1683547900FC8EC3 /* Asset */ = {
 			isa = PBXGroup;
 			children = (
+				969429841683F47300FD9378 /* create member */,
 				96E1048D168357450021405D /* misc */,
 				96F9CEAC1683547900FC8EC3 /* change member password */,
 				96F9CEB31683547900FC8EC3 /* edit member */,
@@ -4913,6 +4961,10 @@
 				96E104EB16835D360021405D /* sidebarBg@2x.png in Resources */,
 				96E104ED16835E070021405D /* 300x225white.png in Resources */,
 				96E104F416835EB40021405D /* ButtonMenu.png in Resources */,
+				969429861683F47300FD9378 /* 會員註冊-02.png in Resources */,
+				9694299216844C6300FD9378 /* create member button.png in Resources */,
+				9694299316844C6300FD9378 /* create member button@2x.png in Resources */,
+				969429981684540700FD9378 /* SVProgressHUD.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5179,6 +5231,8 @@
 				96E104D116835A2C0021405D /* QRscanningViewController.m in Sources */,
 				96E104D216835A2C0021405D /* SidebarViewController.m in Sources */,
 				96E104DB16835A2C0021405D /* ViewController.m in Sources */,
+				9694298F16844B7D00FD9378 /* UIPickerViewButton.m in Sources */,
+				969429991684540700FD9378 /* SVProgressHUD.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
