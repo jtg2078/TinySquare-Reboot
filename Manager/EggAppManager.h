@@ -31,6 +31,25 @@
 
 // member related
 
+- (void)updateMemeberName:(NSString *)name
+                  address:(NSString *)address
+                    phone:(NSString *)phone
+                   gender:(NSNumber *)gender
+                 birthday:(NSString *)birthday
+               useReceipt:(NSNumber *)useReceipt
+              receiptName:(NSString *)receiptName
+                    taxID:(NSString *)taxID
+       sameReceiptAddress:(NSNumber *)sameReceiptAddress
+           receiptAddress:(NSString *)receiptAddress
+            passwordOrNil:(NSString *)password
+                  success:(void (^)())success
+                  failure:(void (^)(NSString *errorMessage, NSError *error))failure;
+
+- (void)updateMemberPassword:(NSString *)currentPwd
+                      newPwd:(NSString *)newPwd
+                     success:(void (^)())success
+                     failure:(void (^)(NSString *errorMessage, NSError *error))failure;
+
 - (void)memberSignIn:(NSString *)email
             password:(NSString *)password
             remember:(BOOL)remember

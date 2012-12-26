@@ -9,6 +9,7 @@
 #import "EditMemeberViewController.h"
 #import "IIViewDeckController.h"
 #import "UINavigationController+Customize.h"
+#import "SVProgressHUD.h"
 
 @interface EditMemeberViewController ()
 
@@ -148,7 +149,7 @@
       } mutableCopy] autorelease],
     [[@{
       INFO_KEY_CONTROL: self.taxIDTextField,
-      INFO_KEY_OPTIONAL: @NO,
+      INFO_KEY_OPTIONAL: @YES,
       INFO_KEY_KEYBOARD: @(UIKeyboardTypeDefault),
       INFO_KEY_VALIDATION: [[^BOOL(){return self.taxIDTextField.text.length;} copy] autorelease],
       INFO_KEY_VALIDATION_MSG: self.taxIDTextField.placeholder,
@@ -165,7 +166,7 @@
       INFO_KEY_CONTROL: self.receiptAddressTextField,
       INFO_KEY_OPTIONAL: @NO,
       INFO_KEY_KEYBOARD: @(UIKeyboardTypeDefault),
-      INFO_KEY_VALIDATION: [[^BOOL(){return self.receiptAddressTextField.text.length;} copy] autorelease],
+      INFO_KEY_VALIDATION: [[^BOOL(){return self.sameButton.selected == YES ? self.receiptAddressTextField.text.length : YES;} copy] autorelease],
       INFO_KEY_VALIDATION_MSG: self.receiptAddressTextField.placeholder,
       } mutableCopy] autorelease],
     ];
@@ -205,6 +206,7 @@
     [comps setYear:1970];
     self.selectedBirthday = [[NSCalendar currentCalendar] dateFromComponents:comps];
     self.birthdayPicker.date = self.selectedBirthday;
+    self.birthdayPicker.maximumDate = [NSDate date];
     self.birthdayTextField.text = [self.dateFormatter stringFromDate:self.selectedBirthday];
     
     // config gender related controls
@@ -227,6 +229,25 @@
     CGSize contentSize = self.myContentView.frame.size;
     self.myScrollView.contentSize = contentSize;
     [self.myScrollView addSubview:self.myContentView];
+    
+    // populate the fields
+    NSDictionary *info = self.appManager.userInfo;
+    if(info)
+    {
+        self.memberNameLabel.text = [NSString stringWithFormat:@"%@ 您好", info[@"name"]];
+        self.nameTextField.text = info[@"name"];
+        self.addressTextField.text = info[@"address"];
+        self.phoneTextField.text = info[@"phone"];
+        self.birthdayTextField.text = info[@"birthday"];
+        if([info[@"gender"] intValue])
+            self.genderTextField.text = [self.genderPickerChoices objectAtIndex: [info[@"gender"] intValue] - 1];
+        self.birthdayPicker.date = [self.dateFormatter dateFromString:info[@"birthday"]];
+        self.receiptButton.selected = [info[@"useReceipt"] boolValue];
+        self.buyerNameTextField.text = info[@"receiptName"];
+        self.taxIDTextField.text = info[@"taxID"];
+        self.sameButton.selected = [info[@"sameReceiptAddress"] boolValue];
+        self.receiptAddressTextField.text = info[@"receiptAddress"];
+    }
 }
 
 - (void)viewDidUnload
@@ -490,7 +511,47 @@
 
 - (IBAction)saveChangeButtonPressed:(id)sender
 {
+    [self.view endEditing:YES];
+    self.activeControl = nil;
     
+    // check parameters
+    for(NSMutableDictionary *info in self.inputInfo)
+    {
+        if([info[INFO_KEY_OPTIONAL] boolValue] == YES)
+            continue;
+        
+        BOOL (^valdiation)() = info[INFO_KEY_VALIDATION];
+        if(valdiation() == NO)
+        {
+            [SVProgressHUD showErrorWithStatus:info[INFO_KEY_VALIDATION_MSG]];
+            return;
+        }
+    }
+    
+    self.saveChangeButton.enabled = NO;
+    [SVProgressHUD showWithStatus:@"傳送中"];
+    
+    [self.appManager updateMemeberName:self.nameTextField.text
+                               address:self.addressTextField.text
+                                 phone:self.phoneTextField.text
+                                gender:@(self.selectedGender + 1)
+                              birthday:self.birthdayTextField.text
+                            useReceipt:@(self.receiptButton.selected)
+                           receiptName:self.buyerNameTextField.text
+                                 taxID:self.taxIDTextField.text
+                    sameReceiptAddress:@(self.sameButton.selected)
+                        receiptAddress:self.receiptAddressTextField.text
+                         passwordOrNil:nil success:^{
+        
+        [SVProgressHUD showSuccessWithStatus:@"更新成功"];
+        self.saveChangeButton.enabled = YES;
+        
+    } failure:^(NSString *errorMessage, NSError *error) {
+        
+        [SVProgressHUD showErrorWithStatus:errorMessage];
+        self.saveChangeButton.enabled = YES;
+        
+    }];
 }
 
 @end

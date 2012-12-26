@@ -205,6 +205,7 @@
     [comps setYear:1970];
     self.selectedBirthday = [[NSCalendar currentCalendar] dateFromComponents:comps];
     self.birthdayPicker.date = self.selectedBirthday;
+    self.birthdayPicker.maximumDate = [NSDate date];
     self.birthdayTextField.text = [self.dateFormatter stringFromDate:self.selectedBirthday];
     
     // config gender related controls

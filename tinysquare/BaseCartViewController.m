@@ -901,7 +901,7 @@
 		model.content1 = [p.price stringValue];
 		model.content2 = p.durationString;
         //
-        model.content3=[p.buyItemCount stringValue];;
+        model.content3=[p.buyItemCount stringValue];
         //model.content3 =[NSString stringWithFormat:@"%@",p.buyItemCount];
 	}
 	

@@ -25,7 +25,7 @@
 
 - (id)initWithOptionsInfo:(SHKFormFieldSettings*) settingsItem client:(id<SHKFormOptionControllerClient>) optionClient;
 - (void) optionsEnumerated:(NSArray*) options;
-- (void) optionsEnumerationFailedWithError:(NSError *)error;;
+- (void) optionsEnumerationFailedWithError:(NSError *)error;
 @end
 
 

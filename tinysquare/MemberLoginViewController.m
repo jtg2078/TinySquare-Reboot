@@ -435,7 +435,7 @@
     [self.view addSubview:accountText];
     
     keyIconArea=[[UIImageView alloc] initWithFrame:CGRectMake(18+14, 130, 16, 16)];
-    keyIconArea.image=[UIImage imageNamed:@"icon_Key.png"];;
+    keyIconArea.image=[UIImage imageNamed:@"icon_Key.png"];
     [self.view addSubview:keyIconArea];
     
     passwordText=[[UILabel alloc] initWithFrame:CGRectMake(1+14, 130, 75, 16)];

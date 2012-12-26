@@ -11,7 +11,6 @@
 #import "IIViewDeckController.h"
 #import "UINavigationController+Customize.h"
 #import "SVProgressHUD.h"
-#import "AFNetworking.h"
 
 @interface SignInMemberViewController ()
 
@@ -308,6 +307,7 @@
     
     // parameters checking passed, prepare for submit
     self.loginButton.enabled = NO;
+    [SVProgressHUD showWithStatus:@"登入中"];
     
     [self.appManager memberSignIn:self.userAccountTextField.text password:self.userPwdTextField.text remember:self.autoLoginSwitch.on success:^{
         

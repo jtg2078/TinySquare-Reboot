@@ -272,7 +272,7 @@
             else if(indexPath.row == 3)
             {
                 ChangeMemeberPasswordViewController *cmpvc = [[[ChangeMemeberPasswordViewController alloc] init] autorelease];
-                [self.viewDeckController rightViewPushViewControllerOverCenterController:emvc];
+                [self.viewDeckController rightViewPushViewControllerOverCenterController:cmpvc];
             }
             
         } failure:^(NSString *errorMessage, NSError *error) {

@@ -54,11 +54,15 @@ static EggAppManager* singletonManager = nil;
         
         NSURL *baseURL = [NSURL URLWithString:@"http://api.ideaegg.com.tw"];
         _httpClient = [[AFHTTPClient alloc] initWithBaseURL:baseURL];
-        [_httpClient registerHTTPOperationClass:[AFJSONRequestOperation class]];
+        // why james decided to use json in some api and not others, be consistent.. :(
+        //[_httpClient registerHTTPOperationClass:[AFJSONRequestOperation class]];
         [_httpClient setDefaultHeader:@"Accept" value:@"application/json"];
         [_httpClient setParameterEncoding:AFJSONParameterEncoding];
         
         _userInfo = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"userdefaultUserInfo"];
+        
+        if(_userInfo)
+            [_httpClient setAuthorizationHeaderWithUsername:_userInfo[@"email"] password:_userInfo[@"password"]];
 	}
 	return self;
 }
@@ -142,6 +146,97 @@ static EggAppManager* singletonManager = nil;
 
 #pragma mark - member related
 
+- (void)updateMemeberName:(NSString *)name
+                  address:(NSString *)address
+                    phone:(NSString *)phone
+                   gender:(NSNumber *)gender
+                 birthday:(NSString *)birthday
+               useReceipt:(NSNumber *)useReceipt
+              receiptName:(NSString *)receiptName
+                    taxID:(NSString *)taxID
+       sameReceiptAddress:(NSNumber *)sameReceiptAddress
+           receiptAddress:(NSString *)receiptAddress
+            passwordOrNil:(NSString *)password
+                  success:(void (^)())success
+                  failure:(void (^)(NSString *errorMessage, NSError *error))failure
+{
+    NSDictionary *params = @{
+        @"password": password.length ? password : self.userInfo[@"password"],
+        @"name": name,
+        @"adress": address,
+        @"phone": phone,
+        @"gender": gender,
+        @"birth": birthday,
+    };
+    
+    [self.httpClient postPath:@"Member.svc/Update" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObj) {
+        
+        NSLog(@"Member.svc/Update: %@", responseObj);
+        
+        [self saveUserInfoAddress:address
+                         birthday:birthday
+                            email:self.userInfo[@"email"]
+                             fcid:self.userInfo[@"fcid"]
+                           gender:gender
+                             name:name
+                            phone:phone
+                       useReceipt:useReceipt
+                      receiptName:receiptName
+                            taxID:taxID
+               sameReceiptAddress:sameReceiptAddress
+                   receiptAddress:receiptAddress
+                         password:self.userInfo[@"password"]
+                       autoSignIn:self.userInfo[@"autoSignIn"]];
+        
+        if(success)
+            success();
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        
+        if(failure)
+            failure(@"需先登入帳號驗證身分", error);
+    }];
+}
+
+- (void)updateMemberPassword:(NSString *)currentPwd
+                      newPwd:(NSString *)newPwd
+                     success:(void (^)())success
+                     failure:(void (^)(NSString *errorMessage, NSError *error))failure
+{
+    NSDictionary *params = @{
+        @"newpw": newPwd,
+        @"password": currentPwd,
+    };
+    
+    [self.httpClient postPath:@"Member.svc/ChangePw" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObj) {
+        
+        NSLog(@"Member.svc/ChangePw: %@", responseObj);
+        
+        [self saveUserInfoAddress:self.userInfo[@"address"]
+                         birthday:self.userInfo[@"birthday"]
+                            email:self.userInfo[@"email"]
+                             fcid:self.userInfo[@"fcid"]
+                           gender:self.userInfo[@"gender"]
+                             name:self.userInfo[@"name"]
+                            phone:self.userInfo[@"phone"]
+                       useReceipt:self.userInfo[@"useReceipt"]
+                      receiptName:self.userInfo[@"receiptName"]
+                            taxID:self.userInfo[@"taxID"]
+               sameReceiptAddress:self.userInfo[@"sameReceiptAddress"]
+                   receiptAddress:self.userInfo[@"receiptAddress"]
+                         password:newPwd
+                       autoSignIn:self.userInfo[@"autoSignIn"]];
+        
+        if(success)
+            success();
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        
+        if(failure)
+            failure(@"密碼不正確", error);
+    }];
+}
+
 - (void)memberSignIn:(NSString *)email
             password:(NSString *)password
             remember:(BOOL)remember
@@ -154,7 +249,11 @@ static EggAppManager* singletonManager = nil;
         @"password": password,
     };
     
-    [self.httpClient postPath:@"Member.svc/Login" parameters:params success:^(AFHTTPRequestOperation *operation, id JSON) {
+    [self.httpClient postPath:@"Member.svc/Login" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObj) {
+        
+        NSError *error = nil;
+        NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingAllowFragments error:&error];
+        
         NSLog(@"Member.svc/Login: %@", JSON);
         
         NSString *address = ![JSON[@"adress"] isKindOfClass:[NSNull class]] ? JSON[@"adress"] : @"";
@@ -165,6 +264,13 @@ static EggAppManager* singletonManager = nil;
         NSString *name = ![JSON[@"name"] isKindOfClass:[NSNull class]] ? JSON[@"name"] : @"";
         NSString *phone = ![JSON[@"phone"] isKindOfClass:[NSNull class]] ? JSON[@"phone"] : @"";
         
+        
+        NSNumber *useReceipt = self.userInfo[@"useReceipt"] ? self.userInfo[@"useReceipt"] : @(NO);
+        NSString *receiptName = self.userInfo[@"receiptName"] ? self.userInfo[@"receiptName"] : name;
+        NSString *taxID = self.userInfo[@"taxID"] ? self.userInfo[@"taxID"] : @"";
+        NSNumber *sameReceiptAddress = self.userInfo[@"sameReceiptAddress"] ? self.userInfo[@"sameReceiptAddress"] : @(NO);
+        NSString *receiptAddress = self.userInfo[@"receiptAddress"] ? self.userInfo[@"receiptAddress"] : @"";
+        
         [self saveUserInfoAddress:address
                          birthday:birthday
                             email:email
@@ -172,6 +278,11 @@ static EggAppManager* singletonManager = nil;
                            gender:gender
                              name:name
                             phone:phone
+                       useReceipt:useReceipt
+                      receiptName:receiptName
+                            taxID:taxID
+               sameReceiptAddress:sameReceiptAddress
+                   receiptAddress:receiptAddress
                          password:password
                        autoSignIn:@(remember)];
         
@@ -253,6 +364,11 @@ static EggAppManager* singletonManager = nil;
                      gender:(NSNumber *)gender
                        name:(NSString *)name
                       phone:(NSString *)phone
+                 useReceipt:(NSNumber *)useReceipt
+                receiptName:(NSString *)receiptName
+                      taxID:(NSString *)taxID
+         sameReceiptAddress:(NSNumber *)sameReceiptAddress
+             receiptAddress:(NSString *)receiptAddress
                    password:(NSString *)password
                  autoSignIn:(NSNumber *)autoSignIn
 {
@@ -264,6 +380,11 @@ static EggAppManager* singletonManager = nil;
         @"gender": gender,
         @"name": name,
         @"phone": phone,
+        @"useReceipt": useReceipt,
+        @"receiptName": receiptName,
+        @"taxID": taxID,
+        @"sameReceiptAddress": sameReceiptAddress,
+        @"receiptAddress": receiptAddress,
         @"password": password,
         @"autoSignIn": autoSignIn,
     };
