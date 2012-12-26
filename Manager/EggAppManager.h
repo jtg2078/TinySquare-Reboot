@@ -7,10 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "AFNetworking.h"
 
-@interface EggAppManager : NSObject {
+@interface EggAppManager : NSObject <UIAlertViewDelegate>
+{
     NSUserDefaults *standardUserDefaults;
 }
+
++ (EggAppManager *)sharedInstance; // Singleton method
 
 - (void)setupInstalledDate;
 - (void)setupAppVersionNumber;
@@ -20,7 +24,24 @@
 - (BOOL)allowReportUsage;
 - (BOOL)allowReportCrash;
 
+@property (nonatomic, retain) AFHTTPClient *httpClient;
+@property (nonatomic, assign) BOOL isSignedIn;
+@property (nonatomic, retain) NSDictionary *userInfo;
 
-+ (EggAppManager *)sharedInstance; // Singleton method
+
+// member related
+
+- (void)memberSignIn:(NSString *)email
+            password:(NSString *)password
+            remember:(BOOL)remember
+             success:(void (^)())success
+             failure:(void (^)(NSString *errorMessage, NSError *error))failure;
+
+- (void)memberSignOut:(void (^)())success
+              failure:(void (^)(NSString *errorMessage, NSError *error))failure;
+
+- (void)authenticateUser:(void (^)())success
+                 failure:(void (^)(NSString *errorMessage, NSError *error))failure
+                  signIn:(void (^)())signIn;
 
 @end

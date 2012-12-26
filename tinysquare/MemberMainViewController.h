@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BaseViewController.h"
 
-@interface MemberMainViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
+@interface MemberMainViewController : BaseViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 {
     
 }

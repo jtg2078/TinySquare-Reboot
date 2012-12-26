@@ -10,6 +10,7 @@
 #import "IIViewDeckController.h"
 #import "UINavigationController+Customize.h"
 #import "SVProgressHUD.h"
+#import "AFNetworking.h"
 
 @interface CreateMemberViewController ()
 
@@ -18,7 +19,6 @@
 @implementation CreateMemberViewController
 
 #pragma mark - define
-
 
 #define INPUT_TYPE_PICKER           99
 
@@ -189,7 +189,7 @@
     }
     
     self.privacyPickerChoices = @[@"同意", @"不同意"];
-    self.genderPickerChoices = @[@"男", @"女"];
+    self.genderPickerChoices = @[@"男", @"女", @"保密"];
     
     // config the privacy related controls
     self.selectedPrivacy = NO;
@@ -245,6 +245,7 @@
     [self setGenderPickerChoices:nil];
     [self setSelectedBirthday:nil];
     [self setDateFormatter:nil];
+    [self setActiveControl:nil];
     [super viewDidUnload];
 }
 
@@ -309,9 +310,9 @@
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
     if(pickerView == self.privacyChoicePicker)
-        return 2;
+        return self.privacyPickerChoices.count;
     else if (pickerView == self.genderPicker)
-        return 2;
+        return self.genderPickerChoices.count;
     
     return 0;
 }
@@ -330,8 +331,6 @@
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component;
 {
-    NSLog(@"%d", row);
-    
     if(pickerView == self.privacyChoicePicker)
     {
         if(row == 0)
@@ -366,9 +365,31 @@
 {
     self.activeControl = textField;
     [self bringActiveControlIntoView];
+    
+    self.previousButton.enabled = YES;
+    self.nextButton.enabled = YES;
+    int index = 0;
+    for(NSMutableDictionary *info in self.inputInfo)
+    {
+        if(info[INFO_KEY_CONTROL] == self.activeControl)
+        {
+            if(index == 0)
+            {
+                self.previousButton.enabled = NO;
+            }
+            
+            if(index == self.inputInfo.count - 1)
+            {
+                self.nextButton.enabled = NO;
+            }
+            
+            break;
+        }
+        index++;
+    }
 }
 
-#pragma mark - misc
+#pragma mark - input related
 
 - (void)bringActiveControlIntoView
 {
@@ -377,8 +398,6 @@
     [self.myScrollView setContentOffset:offset animated:YES];
 }
 
-#pragma mark - user interaction
-
 - (IBAction)privacyCheckButtonPressed:(id)sender
 {
     [self.privacyCheckButton becomeFirstResponder];
@@ -386,10 +405,18 @@
     [self bringActiveControlIntoView];
 }
 
-- (IBAction)createAccountButtonPressed:(id)sender
+- (IBAction)birthdayPickerChanged:(id)sender
+{
+    self.selectedBirthday = self.birthdayPicker.date;
+    self.birthdayTextField.text = [self.dateFormatter stringFromDate:self.selectedBirthday];
+}
+
+- (IBAction)closeKeyboardButtonPressed:(id)sender
 {
     [self.view endEditing:YES];
     self.activeControl = nil;
+    self.previousButton.enabled = YES;
+    self.nextButton.enabled = YES;
 }
 
 - (IBAction)previousButtonPressed:(id)sender
@@ -400,10 +427,6 @@
     {
         if(info[INFO_KEY_CONTROL] == self.activeControl)
         {
-            if(index == 1)
-            {
-                self.previousButton.enabled = NO;
-            }
             self.activeControl = self.inputInfo[index-1][INFO_KEY_CONTROL];
             [self.activeControl becomeFirstResponder];
             
@@ -423,10 +446,6 @@
     {
         if(info[INFO_KEY_CONTROL] == self.activeControl)
         {
-            if(index == self.inputInfo.count - 2)
-            {
-                self.nextButton.enabled = NO;
-            }
             self.activeControl = self.inputInfo[index+1][INFO_KEY_CONTROL];
             [self.activeControl becomeFirstResponder];
             
@@ -438,10 +457,64 @@
     }
 }
 
-- (IBAction)closeKeyboardButtonPressed:(id)sender
+#pragma mark - user interaction
+
+- (IBAction)createAccountButtonPressed:(id)sender
 {
     [self.view endEditing:YES];
     self.activeControl = nil;
+    
+    // check parameters
+    for(NSMutableDictionary *info in self.inputInfo)
+    {
+        BOOL (^valdiation)() = info[INFO_KEY_VALIDATION];
+        if(valdiation() == NO)
+        {
+            [SVProgressHUD showErrorWithStatus:info[INFO_KEY_VALIDATION_MSG]];
+            return;
+        }
+    }
+    
+    self.createAccountButton.enabled = NO;
+    
+    // parameters checking passed, prepare for submit
+    NSURL *baseURL = [NSURL URLWithString:@"http://api.ideaegg.com.tw"];
+    AFHTTPClient *httpClient = [[[AFHTTPClient alloc] initWithBaseURL:baseURL] autorelease];
+    [httpClient registerHTTPOperationClass:[AFJSONRequestOperation class]];
+	[httpClient setDefaultHeader:@"Accept" value:@"application/json"];
+    [httpClient setParameterEncoding:AFJSONParameterEncoding];
+    
+    NSDictionary *params = @{
+        @"fcid": @(1),
+        @"appid": @(1),
+        @"email": self.emailTextField.text,
+        @"password":self.pwdTextField.text,
+        @"name":self.nameTextField.text,
+        @"adress": self.addressTextField.text,
+        @"phone": self.phoneTextField.text,
+        @"gender": @(self.selectedGender + 1),
+        @"birth": self.birthdayTextField.text,
+    };
+    
+    [httpClient postPath:@"Member.svc/Register" parameters:params success:^(AFHTTPRequestOperation *operation, id JSON) {
+        NSLog(@"Member.svc/Register: %@", JSON);
+        
+        if([JSON[@"status"] boolValue] == YES)
+        {
+            [SVProgressHUD showSuccessWithStatus:JSON[@"message"]];
+        }
+        else
+        {
+            [SVProgressHUD showErrorWithStatus:JSON[@"message"]];
+        }
+        
+        self.createAccountButton.enabled = YES;
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+        
+        self.createAccountButton.enabled = YES;
+    }];
 }
 
 - (void)showMemberSidebar:(id)sender
@@ -452,9 +525,5 @@
         [self.viewDeckController closeRightViewAnimated:YES];
 }
 
-- (IBAction)birthdayPickerChanged:(id)sender
-{
-    self.selectedBirthday = self.birthdayPicker.date;
-    self.birthdayTextField.text = [self.dateFormatter stringFromDate:self.selectedBirthday];
-}
+
 @end

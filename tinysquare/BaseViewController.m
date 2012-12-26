@@ -28,7 +28,7 @@
 #import "BaseViewController.h"
 #import "AppDelegate.h"
 #import "GANTracker.h"
-#import "EggAppManager.h"
+
 
 
 @implementation BaseViewController
@@ -104,6 +104,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self 
 											 selector:@selector(updateToCurrentTheme:) 
 												 name:@"com.fingertipcreative.tinysquare.themeChange" object:nil];
+    
+    self.appManager = [EggAppManager sharedInstance];
 }
 
 - (void) viewDidUnload {

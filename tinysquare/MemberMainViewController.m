@@ -9,7 +9,11 @@
 #import "MemberMainViewController.h"
 #import "EditMemeberViewController.h"
 #import "CreateMemberViewController.h"
+#import "SignInMemberViewController.h"
+#import "ChangeMemeberPasswordViewController.h"
+
 #import "IIViewDeckController.h"
+#import "SVProgressHUD.h"
 
 @interface MemberMainViewController ()
 @property (retain, nonatomic) NSArray *menuInfo;
@@ -41,15 +45,19 @@
                             @"title" : @"我要註冊",
                             @"icon" : @"register ",
                         },
-                        @{
+                        [[@{
                             @"title" : @"登入",
                             @"icon" : @"login",
-                        },
+                        } mutableCopy] autorelease],
                         @{
                             @"title" : @"修改會員資料",
                             @"icon" : @"modify ",
                         },
-                    ],
+                        @{
+                            @"title" : @"修改密碼",
+                            @"icon" : @"change password",
+                        },
+                ],
             } mutableCopy] autorelease],
             [[@{
                 @"title" : @"購物記錄",
@@ -107,6 +115,20 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    
+    // notification
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserver:self
+               selector:@selector(handleUserSignedInNotif:)
+                   name:@"USER_SIGNED_IN_NOTIF"
+                 object:nil];
+    
+    [center addObserver:self
+               selector:@selector(handleUserSignedOutNotif:)
+                   name:@"USER_SIGNED_OUT_NOTIF"
+                 object:nil];
+    
+    
 }
 
 - (void)viewDidUnload
@@ -215,10 +237,53 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
     if(indexPath.row == 0)
     {
         CreateMemberViewController *cmvc = [[[CreateMemberViewController alloc] init] autorelease];
         [self.viewDeckController rightViewPushViewControllerOverCenterController:cmvc];
+    }
+    else if(indexPath.row == 1)
+    {
+        if(self.appManager.isSignedIn == YES)
+        {
+            [self.appManager memberSignOut:^{
+                [SVProgressHUD showSuccessWithStatus:@"登出成功"];
+            } failure:^(NSString *errorMessage, NSError *error) {
+                [SVProgressHUD showErrorWithStatus:@"登出失敗"];
+            }];
+        }
+        else
+        {
+            SignInMemberViewController *simvc = [[[SignInMemberViewController alloc] init] autorelease];
+            [self.viewDeckController rightViewPushViewControllerOverCenterController:simvc];
+        }
+    }
+    else if(indexPath.row == 2 || indexPath.row == 3)
+    {
+        [self.appManager authenticateUser:^{
+            
+            if(indexPath.row == 2)
+            {
+                EditMemeberViewController *emvc = [[[EditMemeberViewController alloc] init] autorelease];
+                [self.viewDeckController rightViewPushViewControllerOverCenterController:emvc];
+            }
+            else if(indexPath.row == 3)
+            {
+                ChangeMemeberPasswordViewController *cmpvc = [[[ChangeMemeberPasswordViewController alloc] init] autorelease];
+                [self.viewDeckController rightViewPushViewControllerOverCenterController:emvc];
+            }
+            
+        } failure:^(NSString *errorMessage, NSError *error) {
+            
+            [SVProgressHUD showErrorWithStatus:errorMessage];
+            
+        } signIn:^{
+            
+            SignInMemberViewController *simvc = [[[SignInMemberViewController alloc] init] autorelease];
+            [self.viewDeckController rightViewPushViewControllerOverCenterController:simvc];
+        }];
     }
 }
 
@@ -246,8 +311,7 @@
             }
             else if([info[@"tap"] isEqualToString:@"select"] == YES)
             {
-                EditMemeberViewController *emvc = [[[EditMemeberViewController alloc] init] autorelease];
-                [self.viewDeckController rightViewPushViewControllerOverCenterController:emvc];
+                
             }
             
             break;
@@ -261,6 +325,24 @@
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
     
+}
+
+#pragma mark - notif handling
+
+- (void)handleUserSignedInNotif:(NSNotification *)notif
+{
+    NSMutableDictionary *info = self.menuInfo[1][@"contain"][1];
+    [info setObject:@"登出" forKey:@"title"];
+    
+    [self.myTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:1]] withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
+- (void)handleUserSignedOutNotif:(NSNotification *)notif
+{
+    NSMutableDictionary *info = self.menuInfo[1][@"contain"][1];
+    [info setObject:@"登入" forKey:@"title"];
+    
+    [self.myTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:1]] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 @end

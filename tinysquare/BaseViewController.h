@@ -29,6 +29,7 @@
 #import <UIKit/UIKit.h>
 #import "ASIHTTPRequest.h"
 #import "ASIFormDataRequest.h"
+#import "EggAppManager.h"
 
 
 @interface BaseViewController : UIViewController {
@@ -36,6 +37,8 @@
 	NSMutableArray* requests;
 
 }
+
+@property (nonatomic, assign) EggAppManager *appManager;
 
 - (ASIHTTPRequest*) requestWithURL:(NSString*) s;
 - (ASIFormDataRequest*) formRequestWithURL:(NSString*) s;

@@ -8,9 +8,18 @@
 
 #import "EggAppManager.h"
 
+typedef void (^AUTH_USER_CALLBACK_SUCCESS)();
+typedef void (^AUTH_USER_CALLBACK_FAILURE)(NSString *errorMessage, NSError *error);
+
 @interface EggAppManager ()
+
 - (void)saveToUserDefaults:(id)value forKey:(NSString*)key;
 - (id)retrieveFromUserDefaults:(NSString*)key;
+
+@property (nonatomic, copy) AUTH_USER_CALLBACK_SUCCESS authCallbackSuccess;
+@property (nonatomic, copy) AUTH_USER_CALLBACK_FAILURE authCallbackFailure;
+@property (nonatomic, copy) AUTH_USER_CALLBACK_SUCCESS authCallbackSignIn;
+
 @end
 
 static EggAppManager* singletonManager = nil;
@@ -28,6 +37,8 @@ static EggAppManager* singletonManager = nil;
 #define APP_SETTINGS_ALLOW_REPORT_USAGE             @"ntifoAllowReportUsage"
 #define APP_SETTINGS_ALLOW_REPORT_CRASH             @"ntifoAllowReportCrash"
 
+#define ALERT_VIEW_PROMPT_SIGN_IN                   10
+#define ALERT_VIEW_PROMPT_AUTH                      11
 
 #pragma mark -
 #pragma mark synthesize
@@ -40,6 +51,14 @@ static EggAppManager* singletonManager = nil;
 {
 	if(self = [super init]) {
         standardUserDefaults = [NSUserDefaults standardUserDefaults];
+        
+        NSURL *baseURL = [NSURL URLWithString:@"http://api.ideaegg.com.tw"];
+        _httpClient = [[AFHTTPClient alloc] initWithBaseURL:baseURL];
+        [_httpClient registerHTTPOperationClass:[AFJSONRequestOperation class]];
+        [_httpClient setDefaultHeader:@"Accept" value:@"application/json"];
+        [_httpClient setParameterEncoding:AFJSONParameterEncoding];
+        
+        _userInfo = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"userdefaultUserInfo"];
 	}
 	return self;
 }
@@ -121,6 +140,179 @@ static EggAppManager* singletonManager = nil;
     return YES;
 }
 
+#pragma mark - member related
+
+- (void)memberSignIn:(NSString *)email
+            password:(NSString *)password
+            remember:(BOOL)remember
+             success:(void (^)())success
+             failure:(void (^)(NSString *errorMessage, NSError *error))failure
+{
+    NSDictionary *params = @{
+        @"appid": @(1),
+        @"email": email,
+        @"password": password,
+    };
+    
+    [self.httpClient postPath:@"Member.svc/Login" parameters:params success:^(AFHTTPRequestOperation *operation, id JSON) {
+        NSLog(@"Member.svc/Login: %@", JSON);
+        
+        NSString *address = ![JSON[@"adress"] isKindOfClass:[NSNull class]] ? JSON[@"adress"] : @"";
+        NSString *birthday = ![JSON[@"birthday"] isKindOfClass:[NSNull class]] ? JSON[@"birthday"] : @"";
+        NSString *email = ![JSON[@"email"] isKindOfClass:[NSNull class]] ? JSON[@"email"] : @"";
+        NSNumber *fcid = ![JSON[@"fcid"] isKindOfClass:[NSNull class]] ? JSON[@"fcid"] : [NSNumber numberWithInt:-1];
+        NSNumber *gender = ![JSON[@"gender"] isKindOfClass:[NSNull class]] ? JSON[@"gender"] : [NSNumber numberWithInt:3];
+        NSString *name = ![JSON[@"name"] isKindOfClass:[NSNull class]] ? JSON[@"name"] : @"";
+        NSString *phone = ![JSON[@"phone"] isKindOfClass:[NSNull class]] ? JSON[@"phone"] : @"";
+        
+        [self saveUserInfoAddress:address
+                         birthday:birthday
+                            email:email
+                             fcid:fcid
+                           gender:gender
+                             name:name
+                            phone:phone
+                         password:password
+                       autoSignIn:@(remember)];
+        
+        self.isSignedIn = YES;
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"USER_SIGNED_IN_NOTIF"
+                                                            object:self];
+        
+        if(success)
+            success();
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        
+        self.isSignedIn = NO;
+        
+        if(failure)
+            failure(@"帳號/密碼不正確", error);
+    }];
+}
+
+- (void)memberSignOut:(void (^)())success
+              failure:(void (^)(NSString *errorMessage, NSError *error))failure
+{
+    self.isSignedIn = NO;
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"USER_SIGNED_OUT_NOTIF"
+                                                        object:self];
+    
+    // remove cookies here
+    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    NSArray *cookies = [cookieStorage cookies];
+    for (NSHTTPCookie *cookie in cookies)
+    {
+        [cookieStorage deleteCookie:cookie];
+        NSLog(@"deleted cookie");
+    }
+    
+    if(success)
+        success();
+}
+
+- (void)authenticateUser:(void (^)())success
+                 failure:(void (^)(NSString *errorMessage, NSError *error))failure
+                  signIn:(void (^)())signIn
+{
+    self.authCallbackSuccess = success;
+    self.authCallbackFailure = failure;
+    self.authCallbackSignIn = signIn;
+    
+    if(self.isSignedIn == NO)
+    {
+        UIAlertView *alertView = [[[UIAlertView alloc] initWithTitle:@"會員系統"
+                                                             message:@"請先登入"
+                                                            delegate:self
+                                                   cancelButtonTitle:@"取消"
+                                                   otherButtonTitles:@"登入", nil] autorelease];
+        
+        alertView.tag = ALERT_VIEW_PROMPT_SIGN_IN;
+        [alertView show];
+    }
+    else
+    {
+        UIAlertView *alertView = [[[UIAlertView alloc] initWithTitle:@"會員系統"
+                                                             message:@"輸入帳號密碼"
+                                                            delegate:self
+                                                   cancelButtonTitle:@"取消"
+                                                   otherButtonTitles:@"確定", nil] autorelease];
+        
+        alertView.tag = ALERT_VIEW_PROMPT_AUTH;
+        alertView.alertViewStyle = UIAlertViewStyleSecureTextInput;
+        [alertView show];
+    }
+}
+
+- (void)saveUserInfoAddress:(NSString *)address
+                   birthday:(NSString *)birthday
+                      email:(NSString *)email
+                       fcid:(NSNumber *)fcid
+                     gender:(NSNumber *)gender
+                       name:(NSString *)name
+                      phone:(NSString *)phone
+                   password:(NSString *)password
+                 autoSignIn:(NSNumber *)autoSignIn
+{
+    self.userInfo = @{
+        @"address": address,
+        @"birthday": birthday,
+        @"email": email,
+        @"fcid": fcid,
+        @"gender": gender,
+        @"name": name,
+        @"phone": phone,
+        @"password": password,
+        @"autoSignIn": autoSignIn,
+    };
+    
+    NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
+    [df setObject:self.userInfo forKey:@"userdefaultUserInfo"];
+    [df synchronize];
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(alertView.tag == ALERT_VIEW_PROMPT_SIGN_IN)
+    {
+        if(buttonIndex == 0)
+        {
+            if(self.authCallbackFailure)
+                self.authCallbackFailure(@"需要登入才能進行", nil);
+        }
+        else if (buttonIndex == 1)
+        {
+            if(self.authCallbackSignIn)
+                self.authCallbackSignIn();
+        }
+    }
+    else if (alertView.tag == ALERT_VIEW_PROMPT_AUTH)
+    {
+        if(buttonIndex == 0)
+        {
+            if(self.authCallbackFailure)
+                self.authCallbackFailure(@"需要認證才能進行", nil);
+        }
+        else if (buttonIndex == 1)
+        {
+            UITextField *pwd = [alertView textFieldAtIndex:0];
+            if([pwd.text isEqualToString:self.userInfo[@"password"]] == YES)
+            {
+                if(self.authCallbackSuccess)
+                    self.authCallbackSuccess();
+            }
+            else
+            {
+                if(self.authCallbackFailure)
+                    self.authCallbackFailure(@"密碼不對", nil);
+            }
+        }
+    }
+}
 
 #pragma mark -
 #pragma mark private methods
@@ -137,44 +329,7 @@ static EggAppManager* singletonManager = nil;
 
 - (id)retrieveFromUserDefaults:(NSString*)key
 {
-    
 	id val = [standardUserDefaults objectForKey:key];
-    /*
-	// TODO: / apparent Apple bug: if user hasn't opened Settings for this app yet (as if?!), then
-	// the defaults haven't been copied in yet.  So do so here.  Adds another null check
-	// for every retrieve, but should only trip the first time
-	if (val == nil) { 
-		NSLog(@"user defaults may not have been loaded from Settings.bundle ... doing that now ...");
-		//Get the bundle path
-		NSString *bPath = [[NSBundle mainBundle] bundlePath];
-		NSString *settingsPath = [bPath stringByAppendingPathComponent:@"Settings.bundle"];
-		NSString *plistFile = [settingsPath stringByAppendingPathComponent:@"Root.plist"];
-        
-		//Get the Preferences Array from the dictionary
-		NSDictionary *settingsDictionary = [NSDictionary dictionaryWithContentsOfFile:plistFile];
-		NSArray *preferencesArray = [settingsDictionary objectForKey:@"PreferenceSpecifiers"];
-        
-		//Loop through the array
-		NSDictionary *item;
-		for(item in preferencesArray)
-		{
-			//Get the key of the item.
-			NSString *keyValue = [item objectForKey:@"Key"];
-            
-			//Get the default value specified in the plist file.
-			id defaultValue = [item objectForKey:@"DefaultValue"];
-            
-			if (keyValue && defaultValue) {				
-				[standardUserDefaults setObject:defaultValue forKey:keyValue];
-			}
-		}
-		[standardUserDefaults synchronize];
-	}
-    
-    
-    if (standardUserDefaults) 
-		val = [standardUserDefaults objectForKey:key];
-      */
     
 	return val;
 }

@@ -49,6 +49,8 @@
 #import "IIViewDeckController.h"
 #import "MemberMainViewController.h"
 
+#import "AFHTTPRequestOperationLogger.h"
+
 
 @interface AppDelegate()
 - (void)setupTabBarControllers;
@@ -541,7 +543,7 @@
 	[self checkForFirstTimeRunning];
     //[self updateFcid];
     
-    
+    [[AFHTTPRequestOperationLogger sharedLogger] startLogging];
     
     // my addition
     [[NSNotificationCenter defaultCenter] addObserver:self 
