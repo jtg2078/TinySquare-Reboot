@@ -31,6 +31,16 @@
 
 // member related
 
+- (void)createMemeberName:(NSString *)name
+                  address:(NSString *)address
+                    phone:(NSString *)phone
+                   gender:(NSNumber *)gender
+                 birthday:(NSString *)birthday
+                    email:(NSString *)email
+                 password:(NSString *)password
+                  success:(void (^)(NSString *message))success
+                  failure:(void (^)(NSString *errorMessage, NSError *error))failure;
+
 - (void)updateMemeberName:(NSString *)name
                   address:(NSString *)address
                     phone:(NSString *)phone

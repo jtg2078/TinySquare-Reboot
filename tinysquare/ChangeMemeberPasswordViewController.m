@@ -298,7 +298,6 @@
         self.savePwdButton.enabled = YES;
         
         [self.navigationController popViewControllerAnimated:YES];
-        [self.viewDeckController openRightViewAnimated:YES];
         
     } failure:^(NSString *errorMessage, NSError *error) {
         

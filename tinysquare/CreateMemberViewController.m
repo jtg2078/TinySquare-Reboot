@@ -7,6 +7,7 @@
 //
 
 #import "CreateMemberViewController.h"
+#import "TermsOfServiceViewController.h"
 #import "IIViewDeckController.h"
 #import "UINavigationController+Customize.h"
 #import "SVProgressHUD.h"
@@ -477,44 +478,22 @@
     }
     
     self.createAccountButton.enabled = NO;
+    [SVProgressHUD showWithStatus:@"傳送中"];
     
-    // parameters checking passed, prepare for submit
-    NSURL *baseURL = [NSURL URLWithString:@"http://api.ideaegg.com.tw"];
-    AFHTTPClient *httpClient = [[[AFHTTPClient alloc] initWithBaseURL:baseURL] autorelease];
-    [httpClient registerHTTPOperationClass:[AFJSONRequestOperation class]];
-	[httpClient setDefaultHeader:@"Accept" value:@"application/json"];
-    [httpClient setParameterEncoding:AFJSONParameterEncoding];
-    
-    NSDictionary *params = @{
-        @"fcid": @(1),
-        @"appid": @(1),
-        @"email": self.emailTextField.text,
-        @"password":self.pwdTextField.text,
-        @"name":self.nameTextField.text,
-        @"adress": self.addressTextField.text,
-        @"phone": self.phoneTextField.text,
-        @"gender": @(self.selectedGender + 1),
-        @"birth": self.birthdayTextField.text,
-    };
-    
-    [httpClient postPath:@"Member.svc/Register" parameters:params success:^(AFHTTPRequestOperation *operation, id JSON) {
-        NSLog(@"Member.svc/Register: %@", JSON);
+    [self.appManager createMemeberName:self.nameTextField.text address:self.addressTextField.text phone:self.phoneTextField.text gender:@(self.selectedGender + 1) birthday:self.birthdayTextField.text email:self.emailTextField.text password:self.pwdTextField.text success:^(NSString *message) {
         
-        if([JSON[@"status"] boolValue] == YES)
-        {
-            [SVProgressHUD showSuccessWithStatus:JSON[@"message"]];
-        }
-        else
-        {
-            [SVProgressHUD showErrorWithStatus:JSON[@"message"]];
-        }
-        
+        [SVProgressHUD showSuccessWithStatus:message];
         self.createAccountButton.enabled = YES;
         
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+        TermsOfServiceViewController *tsvc = [[[TermsOfServiceViewController alloc] init] autorelease];
+        tsvc.callFromCreateMemeberVC = YES;
+        [self.navigationController pushViewController:tsvc animated:YES];
         
+    } failure:^(NSString *errorMessage, NSError *error) {
+        
+        [SVProgressHUD showErrorWithStatus:errorMessage];
         self.createAccountButton.enabled = YES;
+        
     }];
 }
 

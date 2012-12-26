@@ -146,6 +146,53 @@ static EggAppManager* singletonManager = nil;
 
 #pragma mark - member related
 
+- (void)createMemeberName:(NSString *)name
+                  address:(NSString *)address
+                    phone:(NSString *)phone
+                   gender:(NSNumber *)gender
+                 birthday:(NSString *)birthday
+                    email:(NSString *)email
+                 password:(NSString *)password
+                  success:(void (^)(NSString *message))success
+                  failure:(void (^)(NSString *errorMessage, NSError *error))failure
+{
+    NSDictionary *params = @{
+        @"fcid": @(1),
+        @"appid": @(1),
+        @"email": email,
+        @"password":password,
+        @"name":name,
+        @"adress": address,
+        @"phone": phone,
+        @"gender": gender,
+        @"birth": birthday,
+    };
+    
+    [self.httpClient postPath:@"Member.svc/Register" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObj) {
+        
+        NSError *error = nil;
+        NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData:responseObj options:NSJSONReadingAllowFragments error:&error];
+        
+        NSLog(@"Member.svc/Register: %@", JSON);
+        
+        if([JSON[@"status"] boolValue] == YES)
+        {
+            if(success)
+                success(JSON[@"message"]);
+        }
+        else
+        {
+            if(failure)
+                failure(JSON[@"message"], nil);
+        }
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        
+        if(failure)
+            failure(error.description, error);
+    }];
+}
+
 - (void)updateMemeberName:(NSString *)name
                   address:(NSString *)address
                     phone:(NSString *)phone

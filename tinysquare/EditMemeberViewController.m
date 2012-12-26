@@ -545,6 +545,8 @@
         
         [SVProgressHUD showSuccessWithStatus:@"更新成功"];
         self.saveChangeButton.enabled = YES;
+                             
+        [self.navigationController popViewControllerAnimated:YES];
         
     } failure:^(NSString *errorMessage, NSError *error) {
         

@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MessageUI/MessageUI.h>
 #import "BaseViewController.h"
 
-@interface MemberMainViewController : BaseViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
+@interface MemberMainViewController : BaseViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, MFMailComposeViewControllerDelegate>
 {
     
 }
