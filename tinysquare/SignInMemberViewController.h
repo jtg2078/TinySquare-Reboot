@@ -29,6 +29,8 @@
 
 @property (retain, nonatomic) NSArray *inputInfo;
 @property (assign, nonatomic) id activeControl;
+@property (assign, nonatomic) BOOL isModal;
+@property (nonatomic, copy) BASIC_CALLBACK finishedCallback;
 
 - (IBAction)autoLoginSwitchValueChanged:(id)sender;
 - (IBAction)forgetPwdButtonPressed:(id)sender;

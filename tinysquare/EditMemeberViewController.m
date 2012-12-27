@@ -166,7 +166,7 @@
       INFO_KEY_CONTROL: self.receiptAddressTextField,
       INFO_KEY_OPTIONAL: @NO,
       INFO_KEY_KEYBOARD: @(UIKeyboardTypeDefault),
-      INFO_KEY_VALIDATION: [[^BOOL(){return self.sameButton.selected == YES ? self.receiptAddressTextField.text.length : YES;} copy] autorelease],
+      INFO_KEY_VALIDATION: [[^BOOL(){return self.receiptAddressTextField.text.length;} copy] autorelease],
       INFO_KEY_VALIDATION_MSG: self.receiptAddressTextField.placeholder,
       } mutableCopy] autorelease],
     ];
@@ -445,6 +445,11 @@
 {
     self.isSameAsAddress = !self.isSameAsAddress;
     self.sameButton.selected = self.isSameAsAddress;
+    
+    if(self.sameButton.selected)
+        self.receiptAddressTextField.text = self.addressTextField.text;
+    else
+        self.receiptAddressTextField.text = @"";
 }
 
 - (IBAction)birthdayPickerChanged:(id)sender

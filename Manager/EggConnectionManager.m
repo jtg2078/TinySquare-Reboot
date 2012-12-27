@@ -51,7 +51,7 @@
  #define URL_AUTHENTICATE	@"http://192.168.0.2/ideaegg/api_update/authenticate"
  #define URL_UPDATE			@"http://192.168.0.2/ideaegg/api_update/update"
  */
-#define APPID				@"5" //@"4" //@"5"//@"2"  //@"5" //"2" //"4"
+#define APPID				@"10" //@"4" //@"5"//@"2"  //@"5" //"2" //"4"
 #define SECRET_TOKEN		@"testapp"
 #define HEX_TO_DEC(h) (h < 'a' ? (h - '0'): (h - 'a' + 10))
 
@@ -72,8 +72,6 @@
 #define API_URL_BUYLIST                 @"http://api.ideaegg.com.tw//Buy.svc/Cart"
 #define API_URL_CHECKBILL               @"http://api.ideaegg.com.tw//Buy.svc/CheckOut"
 
-
-#define API_APP_ID                      @"53"//@"1"
 #define API_INPUT_APPID                 @"appid"
 #define API_INPUT_PRODUCT_COUNT         @"n"
 #define API_INPUT_CATEGORY_ID           @"categoryid"

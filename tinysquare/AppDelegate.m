@@ -600,6 +600,8 @@
         
         self.window.rootViewController = self.viewDeckController;
         
+        [[EggAppManager sharedInstance] registerDevice:nil failure:nil];
+        
         
         /*
         MemberMainViewController *mmvc = [[[MemberMainViewController alloc] init] autorelease];

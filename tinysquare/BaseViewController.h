@@ -31,6 +31,8 @@
 #import "ASIFormDataRequest.h"
 #import "EggAppManager.h"
 
+typedef void (^BASIC_CALLBACK)();
+
 
 @interface BaseViewController : UIViewController {
 	
@@ -56,5 +58,7 @@
 
 - (void)googleAnalyticsTrackPageView:(NSString *)aPagePath;
 - (void)googleAnalyticsTrackEvent:(NSString *)aEventName atViewController:(NSString *)aViewController withStringData:(NSString *)aString intValue:(int)aInt;
+
+- (void)showModalSignInViewController:(void (^)())callback;
 
 @end

@@ -29,6 +29,9 @@
 #import "AboutMeViewController.h"
 #import "MKInfoPanel.h"
 
+#import "SignInMemberViewController.h"
+#import "SVProgressHUD.h"
+
 @interface BaseDetailViewController ()
 - (void)setupCellArray;
 - (void)addWaitingIndicatorCell;
@@ -650,9 +653,19 @@
                            intValue:0];
 }
 
+#pragma mark - shopping cart related
 
+- (void)addToShoppingCart
+{
+    if(self.appManager.isSignedIn == YES)
+    {
+        [self.appManager addToCartProduct:[[self.modelManager detailInfo] numberForKey:@"productId"] count:@(1)];
+        
+        [SVProgressHUD showSuccessWithStatus:@"加到購物車"];
+    }
+}
 
-#pragma mark - 
+#pragma mark -
 #pragma mark DetailCellDelegate
 
 - (void)handleImageEvent
@@ -667,6 +680,36 @@
 
 - (void)handleBuyEvent
 {
+    
+    if(self.appManager.isSignedIn == YES)
+    {
+        [self addToShoppingCart];
+        
+        /*
+        [SVProgressHUD showWithStatus:@"建立中"];
+        [self.appManager createShoppingCart:^{
+            
+            [SVProgressHUD showSuccessWithStatus:@"建立成功"];
+            
+        } failure:^(NSString *errorMessage, NSError *error) {
+            
+            [SVProgressHUD showErrorWithStatus:errorMessage];
+            
+        }];
+         */
+    }
+    else
+    {
+        [self showModalSignInViewController:^{
+            
+            [self addToShoppingCart];
+            
+        }];
+    }
+    
+    return;
+    
+    
     LoginMember *lm=[LoginMember getOrCreateMemberInManagedObjectContext:self.modelManager.managedObjectContext];
 
     

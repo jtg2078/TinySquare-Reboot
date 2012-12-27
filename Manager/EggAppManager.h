@@ -26,8 +26,16 @@
 
 @property (nonatomic, retain) AFHTTPClient *httpClient;
 @property (nonatomic, assign) BOOL isSignedIn;
+@property (nonatomic, retain) NSDate *signedInDate;
 @property (nonatomic, retain) NSDictionary *userInfo;
+@property (nonatomic, retain) NSNumber *fcid;
+@property (nonatomic, retain) NSMutableDictionary *cartTemp;
+@property (nonatomic, retain) NSDictionary *cartReal;
 
+// device related
+
+- (void)registerDevice:(void (^)())success
+               failure:(void (^)(NSString *errorMessage, NSError *error))failure;
 
 // member related
 
@@ -72,5 +80,15 @@
 - (void)authenticateUser:(void (^)())success
                  failure:(void (^)(NSString *errorMessage, NSError *error))failure
                   signIn:(void (^)())signIn;
+
+// shopping cart related
+
+- (void)addToCartProduct:(NSNumber *)pid count:(NSNumber *)count;
+
+- (void)createShoppingCart:(void (^)())success
+                   failure:(void (^)(NSString *errorMessage, NSError *error))failure;
+
+- (void)getLatestShoppingCart:(void (^)())success
+                      failure:(void (^)(NSString *errorMessage, NSError *error))failure;
 
 @end

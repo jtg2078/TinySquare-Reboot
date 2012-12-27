@@ -18,7 +18,6 @@
 
 
 #define API_URL_GET_FCID                @"http://api.ideaegg.com.tw/Member.svc/Init"
-#define API_APP_ID                      @"17"//@"1"
 #define API_INPUT_APPID                 @"appid"
 
 @implementation MemberManager

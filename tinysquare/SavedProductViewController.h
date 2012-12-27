@@ -13,7 +13,7 @@
 
 @class SidebarViewController;
 
-@interface SavedProductViewController : BaseListViewcontroller <MFMailComposeViewControllerDelegate,JTRevealSidebarV2Delegate> {
+@interface SavedProductViewController : BaseListViewcontroller <MFMailComposeViewControllerDelegate> {
 
 }
 

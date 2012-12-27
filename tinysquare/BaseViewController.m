@@ -29,6 +29,9 @@
 #import "AppDelegate.h"
 #import "GANTracker.h"
 
+#import "SignInMemberViewController.h"
+#import "UINavigationController+Customize.h"
+
 
 
 @implementation BaseViewController
@@ -166,6 +169,18 @@
     }
 }
 
+- (void)showModalSignInViewController:(void (^)())callback
+{
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    
+    SignInMemberViewController *smvc = [[[SignInMemberViewController alloc] init] autorelease];
+    smvc.isModal = YES;
+    smvc.finishedCallback = callback;
+    UINavigationController *nav = [[[UINavigationController alloc] initWithRootViewController:smvc] autorelease];
+    [nav setUpCustomizeAppearence];
+    
+    [appDelegate presentModalViewController:nav animated:YES];
+}
 
 #pragma mark -
 #pragma mark Memory management

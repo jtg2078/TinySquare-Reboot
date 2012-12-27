@@ -93,4 +93,13 @@
         [self.navigationController popViewControllerAnimated:YES];
     } 
 }
+
+- (void)showMemberSidebar:(id)sender
+{
+    if([self.viewDeckController isSideClosed:IIViewDeckRightSide])
+        [self.viewDeckController openRightViewAnimated:YES];
+    else
+        [self.viewDeckController closeRightViewAnimated:YES];
+}
+
 @end

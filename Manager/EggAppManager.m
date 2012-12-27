@@ -7,6 +7,8 @@
 //
 
 #import "EggAppManager.h"
+#import "UIDevice+IdentifierAddition.h"
+#import "Constant.h"
 
 typedef void (^AUTH_USER_CALLBACK_SUCCESS)();
 typedef void (^AUTH_USER_CALLBACK_FAILURE)(NSString *errorMessage, NSError *error);
@@ -63,6 +65,8 @@ static EggAppManager* singletonManager = nil;
         
         if(_userInfo)
             [_httpClient setAuthorizationHeaderWithUsername:_userInfo[@"email"] password:_userInfo[@"password"]];
+        
+        _fcid = [[NSUserDefaults standardUserDefaults] objectForKey:@"userdefaultfcid"];
 	}
 	return self;
 }
@@ -144,6 +148,40 @@ static EggAppManager* singletonManager = nil;
     return YES;
 }
 
+#pragma mark - device related
+
+- (void)registerDevice:(void (^)())success
+               failure:(void (^)(NSString *errorMessage, NSError *error))failure
+{
+    NSDictionary *params = @{
+        @"appid": API_APP_ID,
+        @"appversion": @(3), //[[NSBundle mainBundle] infoDictionary][@"CFBundleVersion"],
+        @"imei": [[UIDevice currentDevice] uniqueDeviceIdentifier],
+        @"platform":@(2),
+        @"osversion":[[UIDevice currentDevice] systemVersion],
+        @"country": @"not available",
+        @"phone": @"not available",
+        @"token": @"not available",
+        @"pushmessage": @(0),
+    };
+    
+    [self.httpClient postPath:@"Member.svc/Init" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSString *ret = [[[NSString alloc] initWithBytes:[responseObject bytes] length:[responseObject length] encoding:NSUTF8StringEncoding] autorelease];
+        NSString *trimmedRet = [ret stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+        
+        self.fcid = @(trimmedRet.intValue);
+        
+        if(success)
+            success();
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        
+        if(failure)
+            failure(error.description, error);
+    }];
+}
+
 #pragma mark - member related
 
 - (void)createMemeberName:(NSString *)name
@@ -157,8 +195,8 @@ static EggAppManager* singletonManager = nil;
                   failure:(void (^)(NSString *errorMessage, NSError *error))failure
 {
     NSDictionary *params = @{
-        @"fcid": @(1),
-        @"appid": @(1),
+        @"fcid": self.fcid,
+        @"appid": API_APP_ID,
         @"email": email,
         @"password":password,
         @"name":name,
@@ -291,7 +329,7 @@ static EggAppManager* singletonManager = nil;
              failure:(void (^)(NSString *errorMessage, NSError *error))failure
 {
     NSDictionary *params = @{
-        @"appid": @(1),
+        @"appid": API_APP_ID,
         @"email": email,
         @"password": password,
     };
@@ -334,6 +372,7 @@ static EggAppManager* singletonManager = nil;
                        autoSignIn:@(remember)];
         
         self.isSignedIn = YES;
+        self.signedInDate = [NSDate date];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"USER_SIGNED_IN_NOTIF"
                                                             object:self];
@@ -439,6 +478,112 @@ static EggAppManager* singletonManager = nil;
     NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
     [df setObject:self.userInfo forKey:@"userdefaultUserInfo"];
     [df synchronize];
+}
+
+- (void)saveFCID:(NSNumber *)num
+{
+    self.fcid = num;
+    
+    NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
+    [df setObject:self.fcid forKey:@"userdefaultfcid"];
+    [df synchronize];
+}
+
+#pragma mark - shopping cart related
+
+- (void)addToCartProduct:(NSNumber *)pid count:(NSNumber *)count
+{
+    if(!self.cartTemp)
+        self.cartTemp = [NSMutableDictionary dictionary];
+    
+    
+    NSNumber *num = @(0);
+    
+    if(self.cartTemp[pid])
+        num = self.cartTemp[pid];
+    
+    self.cartTemp[pid] = @(num.intValue + count.intValue);
+}
+
+- (void)createShoppingCart:(void (^)())success
+                   failure:(void (^)(NSString *errorMessage, NSError *error))failure
+{
+    if(!self.cartTemp)
+    {
+        if(failure)
+            failure(@"購物車是空的", nil);
+        
+        return;
+    }
+    
+    __block NSMutableArray *array = [NSMutableArray array];
+    [self.cartTemp enumerateKeysAndObjectsUsingBlock:^(id pid, id count, BOOL *stop) {
+        [array addObject:@{@"pid":pid, @"size":count}];
+    }];
+    
+    NSDictionary *params = @{
+        @"products": array,
+    };
+    
+    [self.httpClient postPath:@"Buy.svc/CartCreate" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSError *error = nil;
+        NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:&error];
+        
+        self.cartReal = JSON;
+        
+        NSLog(@"Buy.svc/CartCreate: %@", [self prettyPrintDict:self.cartReal]);
+        
+        // clear temp cart
+        self.cartTemp = nil;
+        
+        if(success)
+            success();
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        
+        if(failure)
+            failure(@"購物車建立失敗", error);
+        
+    }];
+}
+
+- (void)updateShoppingCart
+{
+    
+}
+
+- (void)getLatestShoppingCart:(void (^)())success
+                      failure:(void (^)(NSString *errorMessage, NSError *error))failure
+{
+    [self.httpClient postPath:@"Buy.svc/GetLatestCart" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSError *error = nil;
+        NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:&error];
+        
+        NSLog(@"Buy.svc/GetLatestCart: %@", JSON);
+        
+        if(success)
+            success();
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        
+        if(failure)
+            failure(@"購物車取得失敗", error);
+        
+    }];
+}
+
+#pragma mark - misc
+
+- (NSString *)prettyPrintDict:(NSDictionary *)dict
+{
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict
+                                                       options:NSJSONWritingPrettyPrinted // Pass 0 if you don't care about the readability of the generated string
+                                                         error:&error];
+    
+    return [[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding] autorelease];
 }
 
 #pragma mark - UIAlertViewDelegate

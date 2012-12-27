@@ -177,13 +177,13 @@
                                       reuseIdentifier:cellIdentifier] autorelease];
         cell.selectionStyle = UITableViewCellSelectionStyleGray;
         cell.indentationLevel = 3;
-        cell.textLabel.textColor = [UIColor darkGrayColor];
+        cell.textLabel.textColor = [UIColor whiteColor];
         
         UIImage *bgImage = [UIImage imageNamed:@"bg2.png"];
         UIImageView *bgImageView = [[[UIImageView alloc] initWithImage:bgImage] autorelease];
         bgImageView.frame = CGRectMake(0, 0, tableView.frame.size.width, 44);
-        cell.backgroundView = bgImageView;
-        cell.opaque = YES;
+        [cell.contentView addSubview:bgImageView];
+        //cell.backgroundView = bgImageView;
         
         UIImage *topShadowImage = [UIImage imageNamed:@"shadow_01.png"];
         UIImageView *topShadowImageView = [[[UIImageView alloc] initWithImage:topShadowImage] autorelease];
@@ -435,7 +435,9 @@
     NSMutableDictionary *info2 = self.menuInfo[1][@"contain"][1];
     [info2 setObject:@"登出" forKey:@"title"];
     
-    [self.myTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:1]] withRowAnimation:UITableViewRowAnimationAutomatic];
+    // in case the section is not expanded
+    if([self.myTableView numberOfRowsInSection:1])
+        [self.myTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:1]] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void)handleUserSignedOutNotif:(NSNotification *)notif
@@ -450,7 +452,9 @@
     NSMutableDictionary *info2 = self.menuInfo[1][@"contain"][1];
     [info2 setObject:@"登入" forKey:@"title"];
     
-    [self.myTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:1]] withRowAnimation:UITableViewRowAnimationAutomatic];
+    // in case the section is not expanded
+    if([self.myTableView numberOfRowsInSection:1])
+        [self.myTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:1]] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 @end

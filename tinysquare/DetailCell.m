@@ -202,40 +202,50 @@
 			[coupon addTarget:self action:@selector(couponButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 			[self.contentView addSubview:coupon];
             
+            int x = 5 - 3;
+            int y = 240;
+            int width = 68;
+            int height = 53;
+            int margin = 5;
+            
             UIButton *buy = [UIButton buttonWithType:UIButtonTypeCustom];
-			buy.frame = CGRectMake(5 - 4, 240, 68, 53);
+			buy.frame = CGRectMake(x, y, width, height);
 			buy.tag = TAG_BUY_BUTTON;
             //LoginMember *lm=[LoginMember getOrCreateMemberInManagedObjectContext:
             //buy button enabled here
             buy.enabled = [[cellData.miscContents objectForKey:@"price"] isEqualToNumber:[NSNumber numberWithInt:0]] ? NO:YES ;
-			[buy setBackgroundImage:[UIImage imageNamed:@"detailIconBuy.png"] forState:UIControlStateNormal];
+			[buy setBackgroundImage:[UIImage imageNamed:@"btn_cart_buy"] forState:UIControlStateNormal];
 			[buy addTarget:self action:@selector(buyButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-			//[self.contentView addSubview:buy];
+			[self.contentView addSubview:buy];
+            x += (width + margin);
             
             UIButton *web = [UIButton buttonWithType:UIButtonTypeCustom];
-			web.frame = CGRectMake(5 - 4, 240, 93, 53);
+			web.frame = CGRectMake(x, y, width, height);
 			web.tag = TAG_WEB_BUTTON;
             NSString *url = (NSString *)[cellData.miscContents objectForKey:@"url"];
             web.enabled = [url length] ? YES: NO;
-			[web setBackgroundImage:[UIImage imageNamed:@"nonBuy_IconWeb.png"] forState:UIControlStateNormal];
+			[web setBackgroundImage:[UIImage imageNamed:@"btn_open_browser"] forState:UIControlStateNormal];
 			[web addTarget:self action:@selector(webButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 			[self.contentView addSubview:web];
+            x += (width + margin);
             
             UIButton *phone = [UIButton buttonWithType:UIButtonTypeCustom];
-			phone.frame = CGRectMake(98, 240, 93, 53);
+			phone.frame = CGRectMake(x, y, width, height);
 			phone.tag = TAG_PHONE_BUTTON;
             NSString *phoneNumber = (NSString *)[cellData.miscContents objectForKey:@"phoneNumber"];
             phone.enabled = [phoneNumber length] ? YES: NO;
-			[phone setBackgroundImage:[UIImage imageNamed:@"nonBuy_IconPhone.png"] forState:UIControlStateNormal];
+			[phone setBackgroundImage:[UIImage imageNamed:@"btn_phone_call"] forState:UIControlStateNormal];
 			[phone addTarget:self action:@selector(phoneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 			[self.contentView addSubview:phone];
+            x += (width + margin);
             
             UIButton *share = [UIButton buttonWithType:UIButtonTypeCustom];
-			share.frame = CGRectMake(196, 240, 93, 53);
+			share.frame = CGRectMake(x, y, width, height);
 			share.tag = TAG_SHARE_BUTTON;
-			[share setBackgroundImage:[UIImage imageNamed:@"nonBuy_IconSocial.png"] forState:UIControlStateNormal];
+			[share setBackgroundImage:[UIImage imageNamed:@"btn_share"] forState:UIControlStateNormal];
 			[share addTarget:self action:@selector(shareButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 			[self.contentView addSubview:share];
+            x += (width + margin);
         }
         
         if(cellData.cellType == CellTypeAboutMeTitleAndImages)

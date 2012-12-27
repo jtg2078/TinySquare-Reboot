@@ -15,17 +15,14 @@
 #import "AddToCartViewController.h"
 
 #import "NewViewController.h"
-#import "JTRevealSidebarV2Delegate.h"
-#import "SidebarViewController.h"
-#import "UINavigationItem+JTRevealSidebarV2.h"
-#import "UIViewController+JTRevealSidebarV2.h"
 
 #import "BaseMemberAreaViewController.h"
 
+#import "IIViewDeckController.h"
 
 
 
-@interface SavedProductViewController() <JTRevealSidebarV2Delegate,UITableViewDataSource, UITableViewDelegate, SidebarViewControllerDelegate>
+@interface SavedProductViewController()
 - (void)beginEditBookmarks;
 - (void)endEditBookmarks;
 - (void)setupNavigationBarButtons;
@@ -33,29 +30,27 @@
 
 @implementation SavedProductViewController
 
-#pragma mark -
-#pragma mark define
+#pragma mark - define
 
 #define TAB_IMAGE_NAME      @"SavedProductTabIcon.png"
 #define MODULE_NAME         @"我的收藏"
 #define PLACE_HOLDER_TEXT   @"您目前沒有任何收藏喔"
 
+#pragma mark - memory management
 
-#pragma mark -
-#pragma mark synthesize
-
-
-#pragma mark - 
-#pragma mark dealloc
+- (void)didReceiveMemoryWarning
+{
+    // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
+    
+}
 
 - (void)dealloc {
 	[placeHolderLabel release];
     [super dealloc];
 }
 
-
-#pragma mark -
-#pragma mark initialization and view construction
+#pragma mark - init
 
 - (id)init
 {
@@ -74,13 +69,11 @@
 
 - (void)setupNavigationBarButtons
 {
-    /*
     UIButton* memberShip2Button = [self.navigationController createNavigationBarButtonWithOutTextandSetIcon:CustomizeButtonIconMembership2
-                                                                                   iconPlacement:CustomizeButtonIconPlacementRight
-                                                                                          target:self
-                                                                                          action:@selector(revealRightSidebar:)];
+                                                                                              iconPlacement:CustomizeButtonIconPlacementRight
+                                                                                                     target:self
+                                                                                                     action:@selector(showMemberSidebar:)];
 	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:memberShip2Button] autorelease];
-    */
     
     
 
@@ -92,95 +85,30 @@
                                                                                          target:self 
                                                                                          action:@selector(beginEditBookmarks)];
 	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:editBookmarkButton] autorelease];
-     
-	/*
-    UIButton* shareBookmarkButton = [self.navigationController createNavigationBarButtonWithText:NSLocalizedString(@"購物車", nil) 
-                                                                                            icon:CustomizeButtonIconAdd 
-                                                                                   iconPlacement:CustomizeButtonIconPlacementRight 
-                                                                                          target:self 
-                                                                                          action:@selector(editMyCart)];
-	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:shareBookmarkButton] autorelease];
-     */
-
-	// setup share bookmark button
-	
-    
-    /*
-    UIButton* shareBookmarkButton = [self.navigationController createNavigationBarButtonWithText:NSLocalizedString(@"郵寄", nil) 
-                                                                                            icon:CustomizeButtonIconEmail 
-                                                                                   iconPlacement:CustomizeButtonIconPlacementRight 
-                                                                                          target:self 
-                                                                                          action:@selector(shareBookmarks)];
-	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:shareBookmarkButton] autorelease];
-    */
  
 }
 
+#pragma mark - theme change related
 
-#pragma mark -
-#pragma mark theme change
-
-- (void)updateToCurrentTheme:(NSNotification *)notif {
+- (void)updateToCurrentTheme:(NSNotification *)notif
+{
     [super updateToCurrentTheme:notif];
     [self applyTheme];
 }
 
-- (void)applyTheme {
+- (void)applyTheme
+{
     [super applyTheme];
+    
     // refresh navigation bar buttons
-    if(theTableView.isEditing)
-    {
-        UIButton* editBookmarkButton = [self.navigationController createNavigationBarButtonWithText:NSLocalizedString(@"完成", @"ItemListViewController") 
-                                                                                               icon:CustomizeButtonIconEdit  
-                                                                                      iconPlacement:CustomizeButtonIconPlacementLeft 
-                                                                                             target:self 
-                                                                                             action:@selector(endEditBookmarks)];
-        self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:editBookmarkButton] autorelease];
-    }
-    else
-    {
-        // setup add bookmark button
-        UIButton* editBookmarkButton = [self.navigationController createNavigationBarButtonWithText:NSLocalizedString(@"編輯", @"ItemListViewController") 
-                                                                                               icon:CustomizeButtonIconEdit 
-                                                                                      iconPlacement:CustomizeButtonIconPlacementLeft 
-                                                                                             target:self 
-                                                                                             action:@selector(beginEditBookmarks)];
-        self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:editBookmarkButton] autorelease];
-    }
-    
-	
-    
-    	// setup share bookmark button
-    /*
-    UIButton* shareBookmarkButton = [self.navigationController createNavigationBarButtonWithText:NSLocalizedString(@"我的購物車", nil) 
-                                                                                            icon:CustomizeButtonIconAdd 
-                                                                                   iconPlacement:CustomizeButtonIconPlacementRight 
-                                                                                          target:self 
-                                                                                          action:@selector(editMyCart)];
-	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:
-                                               shareBookmarkButton] autorelease];
-     */
-
-	
-    /*
-    UIButton* shareBookmarkButton = [self.navigationController createNavigationBarButtonWithText:NSLocalizedString(@"郵寄", nil) 
-                                                                                            icon:CustomizeButtonIconEmail 
-                                                                                   iconPlacement:CustomizeButtonIconPlacementRight 
-                                                                                          target:self 
-                                                                                          action:@selector(shareBookmarks)];
-	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:
-     shareBookmarkButton] autorelease];
-     */
+    [self setupNavigationBarButtons];
 }
 
-
-#pragma mark -
-#pragma mark view lifecycle
+#pragma mark - view lifecycle
 
 - (void)viewDidLoad 
 {
 	[super viewDidLoad];
-    self.navigationItem.revealSidebarDelegate=self;
     
     // setup navigation bar buttons
     [self setupNavigationBarButtons];
@@ -192,34 +120,18 @@
 	[self loadSavedProducts];
 }
 
-- (void)viewDidUnload {
+- (void)viewDidUnload
+{
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
 	[placeHolderLabel release];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-	[super viewWillAppear:animated];
-}
+#pragma mark - public methods
 
-- (void)viewDidAppear:(BOOL)animated {
-	[super viewDidAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-	[super viewWillDisappear:animated];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-	[super viewDidDisappear:animated];
-}
-
-
-#pragma mark - 
-#pragma mark public methods
-
-- (void)loadSavedProducts {
+- (void)loadSavedProducts
+{
 	[self loadFromCoreData];
 }
 
@@ -262,8 +174,7 @@
 }
 
 
-#pragma mark -
-#pragma mark Table view delegate
+#pragma mark - UITableViewDelegate
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath 
 {
@@ -300,9 +211,7 @@
 	[dvc release];
 }
 
-
-#pragma mark -
-#pragma mark NSFetchedResultsControllerDelegate
+#pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller 
 {
@@ -313,9 +222,7 @@
 		[self endEditBookmarks];
 }
 
-
-#pragma mark -
-#pragma mark MFMailComposeViewControllerDelegate
+#pragma mark - MFMailComposeViewControllerDelegate
 
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
 	[controller dismissModalViewControllerAnimated:YES];
@@ -330,40 +237,14 @@
 #pragma mark -
 #pragma mark private interface
 
-
-
 - (void)beginEditBookmarks
 {
 	[theTableView setEditing:YES animated:YES];
-	
-	UIButton* editBookmarkButton = [self.navigationController createNavigationBarButtonWithText:NSLocalizedString(@"完成", @"ItemListViewController") 
-																					  icon:CustomizeButtonIconEdit  
-																			 iconPlacement:CustomizeButtonIconPlacementLeft 
-																					target:self 
-																					action:@selector(endEditBookmarks)];
-	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:editBookmarkButton] autorelease];
 }
 
 - (void)endEditBookmarks
 {
 	[theTableView setEditing:NO animated:YES];
-	
-	UIButton* editBookmarkButton = [self.navigationController createNavigationBarButtonWithText:NSLocalizedString(@"編輯", @"ItemListViewController") 
-																					  icon:CustomizeButtonIconEdit  
-																			 iconPlacement:CustomizeButtonIconPlacementLeft 
-																					target:self 
-																					action:@selector(beginEditBookmarks)];
-	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:editBookmarkButton] autorelease];
-}
-
-
-
--(void)editMyCart
-{
-    AddToCartViewController *loginView=[[AddToCartViewController alloc] init];
-    loginView.managedObjectContext = self.managedObjectContext;
-    [self.navigationController pushViewController:loginView animated:YES];
-    [loginView release];
 }
 
 - (void)shareBookmarks
@@ -423,123 +304,14 @@
 	});
 }
 
-#pragma mark -
-#pragma mark sidebar related
-- (void)revealLeftSidebar:(id)sender {
-    [self.navigationController toggleRevealState:JTRevealedStateLeft];
-}
+#pragma mark - user interaction
 
-- (void)revealRightSidebar:(id)sender {
-    [self.navigationController toggleRevealState:JTRevealedStateRight];
-}
-
-// This is an examle to configure your sidebar view through a custom UIViewController
-- (UIView *)viewForLeftSidebar {
-    // Use applicationViewFrame to get the correctly calculated view's frame
-    // for use as a reference to our sidebar's view
-    
-    CGRect viewFrame = self.navigationController.applicationViewFrame;
-    
-    UITableViewController *controller = self.leftSidebarViewController;
-    if ( ! controller) {
-        self.leftSidebarViewController = [[SidebarViewController alloc] init];
-        self.leftSidebarViewController.sidebarDelegate = self;
-        controller = self.leftSidebarViewController;
-        //controller.title = @"LeftSidebarViewController";
-    }
-    controller.view.frame = CGRectMake(0, viewFrame.origin.y, 270, viewFrame.size.height);
-    
-    
-    controller.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleHeight;
-    return controller.view;
-     
-
-}
-
-
-- (void)sidebarViewController:(SidebarViewController *)sidebarViewController didSelectObject:(NSObject *)object atIndexPath:(NSIndexPath *)indexPath {
-    
-    
-    [self.navigationController setRevealedState:JTRevealedStateNo];
-    
-    //modify over here
-    
-    BaseMemberAreaViewController *controller = [[BaseMemberAreaViewController alloc] init];
-    //controller.view.backgroundColor = [UIColor viewFlipsideBackgroundColor];
-    controller.title = (NSString *)object;
-    controller.leftSidebarViewController  = sidebarViewController;
-    controller.leftSelectedIndexPath      = indexPath;
-    //controller.label.text = [NSString stringWithFormat:@"Selected %@ from LeftSidebarViewController", (NSString *)object];
-    sidebarViewController.sidebarDelegate = controller;
-    [self.navigationController setViewControllers:[NSArray arrayWithObject:controller] animated:NO];
-
-    
-        /*
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:hpmvc];
-    nav.delegate = self;
-    [nav setUpCustomizeAppearence];
-    [hpmvc release];
-    */
-}
-
-// This is an examle to configure your sidebar view without a UIViewController
-- (UIView *)viewForRightSidebar {
-    
-    
-    CGRect viewFrame = self.navigationController.applicationViewFrame;
-    
-    UITableViewController *controller = self.leftSidebarViewController;
-    if ( ! controller) {
-        self.leftSidebarViewController = [[SidebarViewController alloc] init];
-        self.leftSidebarViewController.sidebarDelegate = self;
-        controller = self.leftSidebarViewController;
-        //controller.title = @"LeftSidebarViewController";
-    }
-    controller.view.frame = CGRectMake(0, viewFrame.origin.y, 270, viewFrame.size.height);
-    
-    
-    controller.view.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleHeight;
-    return controller.view;
-    
-    // Use applicationViewFrame to get the correctly calculated view's frame
-    // for use as a reference to our sidebar's view
-    /*
-    CGRect viewFrame = self.navigationController.applicationViewFrame;
-    UITableView *view = self.rightSidebarView;
-    if ( ! view) {
-        view = self.rightSidebarView = [[UITableView alloc] initWithFrame:CGRectZero];
-        view.dataSource = self;
-        view.delegate   = self;
-    }
-    view.frame = CGRectMake(self.navigationController.view.frame.size.width - 270, viewFrame.origin.y, 270, viewFrame.size.height);
-    view.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleHeight;
-    return view;
-     */
-}
-
-- (NSIndexPath *)lastSelectedIndexPathForSidebarViewController:(SidebarViewController *)sidebarViewController {
-    return self.leftSelectedIndexPath;
-}
-
-- (void)didChangeRevealedStateForViewController:(UIViewController *)viewController {
-    // Example to disable userInteraction on content view while sidebar is revealing
-    if (viewController.revealedState == JTRevealedStateNo) {
-        self.view.userInteractionEnabled = YES;
-    } else {
-        self.view.userInteractionEnabled = NO;
-    }
-}
-
-
-
-#pragma mark -
-#pragma mark memory management
-
-- (void)didReceiveMemoryWarning {
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc. that aren't in use.
+- (void)showMemberSidebar:(id)sender
+{
+    if([self.viewDeckController isSideClosed:IIViewDeckRightSide])
+        [self.viewDeckController openRightViewAnimated:YES];
+    else
+        [self.viewDeckController closeRightViewAnimated:YES];
 }
 
 @end

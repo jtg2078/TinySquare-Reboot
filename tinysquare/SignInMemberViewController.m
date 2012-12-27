@@ -72,14 +72,23 @@
     
     // -------------------- navigation bar --------------------
     
-	UIButton* backButton = [self.navigationController setUpCustomizeBackButtonWithText:NSLocalizedString(@"返回", nil)];
-	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:backButton] autorelease];
-    
-    UIButton* memberShip2Button = [self.navigationController createNavigationBarButtonWithOutTextandSetIcon:CustomizeButtonIconMembership2
-                                                                                              iconPlacement:CustomizeButtonIconPlacementRight
-                                                                                                     target:self
-                                                                                                     action:@selector(showMemberSidebar:)];
-	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:memberShip2Button] autorelease];
+    if(self.isModal)
+    {
+        UIButton *doneButton = [self.navigationController setUpCustomizeButtonWithText:@"完成" icon:nil iconPlacement:CustomizeButtonIconPlacementLeft target:self action:@selector(dismissSelf)];
+        
+        self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:doneButton] autorelease];
+    }
+    else
+    {
+        UIButton* backButton = [self.navigationController setUpCustomizeBackButtonWithText:NSLocalizedString(@"返回", nil)];
+        self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:backButton] autorelease];
+        
+        UIButton* memberShip2Button = [self.navigationController createNavigationBarButtonWithOutTextandSetIcon:CustomizeButtonIconMembership2
+                                                                                                  iconPlacement:CustomizeButtonIconPlacementRight
+                                                                                                         target:self
+                                                                                                         action:@selector(showMemberSidebar:)];
+        self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:memberShip2Button] autorelease];
+    }
     
     // -------------------- input field related --------------------
     
@@ -314,7 +323,15 @@
         [SVProgressHUD showSuccessWithStatus:@"登入成功"];
         
         self.loginButton.enabled = YES;
-        [self.navigationController popViewControllerAnimated:YES];
+        
+        if(self.isModal)
+        {
+            [self dismissSelf];
+        }
+        else
+        {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
         
     } failure:^(NSString *errorMessage, NSError *error) {
         
@@ -337,6 +354,14 @@
         [self.viewDeckController openRightViewAnimated:YES];
     else
         [self.viewDeckController closeRightViewAnimated:YES];
+}
+
+- (void)dismissSelf
+{
+    [self dismissViewControllerAnimated:YES completion:^{
+        if(self.finishedCallback)
+            self.finishedCallback();
+    }];
 }
 
 @end
