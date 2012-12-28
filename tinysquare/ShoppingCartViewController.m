@@ -13,12 +13,17 @@
 #import "UIImageView+AFNetworking.h"
 
 #import "TmpProduct.h"
+#import "Constant.h"
 
 @interface ShoppingCartViewController ()
 
 @end
 
 @implementation ShoppingCartViewController
+
+#pragma mark - define
+
+#define ALERT_VIEW_EDIT_COUNT   10
 
 #pragma mark - memory management
 
@@ -111,6 +116,38 @@
 
 - (void)refreshShoppingCart
 {
+    [self.appManager getLatestShoppingCart:^(int code, NSString *msg) {
+        
+        int itemCount = 0;
+        int amount = 0;
+        NSMutableArray *pidArray = [NSMutableArray array];
+        self.countDict = [NSMutableDictionary dictionary];
+        
+        for(NSDictionary *p in self.appManager.cartReal[CART_KEY_products])
+        {
+            itemCount += [p[CART_ITEM_KEY_size] intValue];
+            amount += [p[CART_ITEM_KEY_price] intValue];
+            [pidArray addObject:p[CART_ITEM_KEY_pid]];
+            [self.countDict setObject:p[CART_ITEM_KEY_size] forKey:p[CART_ITEM_KEY_pid]];
+        }
+        
+        self.totalItemCountLabel.text = [@(itemCount) stringValue];
+        self.totalAmountLabel.text = [@(amount) stringValue];
+        self.shippingCostLabel.text = [self.appManager.cartReal[CART_KEY_shippingfees] stringValue];
+        self.freeShippingCostLabel.text = [self.appManager.cartReal[CART_KEY_noshippingfee] stringValue];
+        self.checkoutCostLabel.text = [self.appManager.cartReal[CART_KEY_total] stringValue];
+        
+        [self getProductDetailForShoppingCart:pidArray];
+        
+        [self.myTableView reloadData];
+        
+    } failure:^(NSString *errorMessage, NSError *error) {
+        
+        [SVProgressHUD showErrorWithStatus:errorMessage];
+        
+    }];
+    
+    /*
     [self.appManager processTempCart:^{
         
         int itemCount = 0;
@@ -145,6 +182,7 @@
         [SVProgressHUD showErrorWithStatus:errorMessage];
         
     }];
+     */
 }
 
 - (void)getProductDetailForShoppingCart:(NSArray *)pidArray
@@ -207,13 +245,67 @@
 
 #pragma mark - UITextFieldDelegate
 
-- (void)textFieldDidBeginEditing:(UITextField *)textField
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
-    if([textField.superview.superview isKindOfClass:[ShoppingCartCell class]] == YES)
+    ShoppingCartCell *cell = (ShoppingCartCell *)textField.superview.superview;
+    NSIndexPath *indexPath = [self.myTableView indexPathForCell:cell];
+    TmpProduct *p = (TmpProduct *)[self.productArray objectAtIndex:indexPath.row];
+    
+    
+    UIAlertView *alertView = [[[UIAlertView alloc] initWithTitle:p.productName
+                                                         message:@"請輸入數量"
+                                                        delegate:self
+                                               cancelButtonTitle:@"取消"
+                                               otherButtonTitles:@"確定", nil] autorelease];
+    
+    alertView.tag = indexPath.row;
+    alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+    UITextField *tf = [alertView textFieldAtIndex:0];
+    tf.keyboardType = UIKeyboardTypeNumberPad;
+    tf.text = textField.text;
+    
+    [alertView show];
+    
+    [self.myTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    
+    return NO;
+}
+
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(buttonIndex == 1)
     {
-        ShoppingCartCell *cell = (ShoppingCartCell *)textField.superview.superview;
-        NSIndexPath *indexPath = [self.myTableView indexPathForCell:cell];
-        [self.myTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+        UITextField *tf = [alertView textFieldAtIndex:0];
+        
+        TmpProduct *p = (TmpProduct *)[self.productArray objectAtIndex:alertView.tag];
+        NSNumber *pid = p.productId;
+        NSNumber *count = @([tf.text intValue]);
+        
+        [SVProgressHUD showWithStatus:@"更新中"];
+        [self.appManager updateShoppingCartForPid:pid
+                                            count:count
+                                          success:^(int code, NSString *msg) {
+                                              
+                                              if(code == UPDATE_CART_CODE_db_add_success ||
+                                                 code == UPDATE_CART_CODE_db_delete_success ||
+                                                 code == UPDATE_CART_CODE_db_update_success)
+                                              {
+                                                  [SVProgressHUD showSuccessWithStatus:@"更新成功"];
+                                                  [self refreshShoppingCart];
+                                              }
+                                              else
+                                              {
+                                                  [SVProgressHUD showErrorWithStatus:msg];
+                                              }
+                                              
+                                          } failure:^(NSString *errorMessage, NSError *error) {
+                                              
+                                              [SVProgressHUD showErrorWithStatus:errorMessage];
+                                              
+                                          }];
+        
     }
 }
 
@@ -260,7 +352,7 @@
 
 - (IBAction)buyButtonPressed:(id)sender
 {
-    
+    [SVProgressHUD showErrorWithStatus:@"還沒做"];
 }
 
 - (IBAction)closeKeyboardButtonPressed:(id)sender

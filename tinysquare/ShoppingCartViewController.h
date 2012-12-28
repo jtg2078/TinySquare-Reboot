@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "BaseViewController.h"
 
-@interface ShoppingCartViewController : BaseViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate>
+@interface ShoppingCartViewController : BaseViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIAlertViewDelegate>
 {
     int tableViewWidth;
     int tableViewHeight;

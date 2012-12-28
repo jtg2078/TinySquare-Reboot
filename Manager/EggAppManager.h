@@ -98,6 +98,11 @@
 - (void)createShoppingCart:(void (^)(int code, NSString *msg))success
                    failure:(void (^)(NSString *errorMessage, NSError *error))failure;
 
+- (void)updateShoppingCartForPid:(NSNumber *)pid
+                           count:(NSNumber *)count
+                         success:(void (^)(int code, NSString *msg))success
+                         failure:(void (^)(NSString *errorMessage, NSError *error))failure;
+
 - (void)getLatestShoppingCart:(void (^)(int code, NSString *msg))success
                       failure:(void (^)(NSString *errorMessage, NSError *error))failure;
 

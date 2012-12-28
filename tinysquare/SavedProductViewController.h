@@ -9,19 +9,13 @@
 #import <UIKit/UIKit.h>
 #import	<MessageUI/MessageUI.h>
 #import "BaseListViewcontroller.h"
-#import "JTRevealSidebarV2Delegate.h"
-
-@class SidebarViewController;
+#import "ShoppingCartViewController.h"
 
 @interface SavedProductViewController : BaseListViewcontroller <MFMailComposeViewControllerDelegate> {
 
 }
 
-@property (nonatomic, strong) SidebarViewController *leftSidebarViewController;
-@property (nonatomic, strong) NSIndexPath *leftSelectedIndexPath;
-@property (nonatomic, strong) UITableView *rightSidebarView;
-
-
+@property (nonatomic, retain) ShoppingCartViewController *shoppingCartVC;
 
 - (void)loadSavedProducts;
 - (void)shareBookmarks;

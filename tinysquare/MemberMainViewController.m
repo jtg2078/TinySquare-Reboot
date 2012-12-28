@@ -378,8 +378,9 @@
             {
                 if ([info[@"title"] isEqualToString:SHOPPING_RECORD])
                 {
-                    ShoppingCartViewController *scvc= [[[ShoppingCartViewController alloc] init] autorelease];
-                     [self.viewDeckController rightViewPushViewControllerOverCenterController:scvc];
+                    [SVProgressHUD showErrorWithStatus:@"還沒做"];
+                    //ShoppingCartViewController *scvc= [[[ShoppingCartViewController alloc] init] autorelease];
+                    //[self.viewDeckController rightViewPushViewControllerOverCenterController:scvc];
                 }
                 else if ([info[@"title"] isEqualToString:CUSTOMER_FEEDBACK])
                 {

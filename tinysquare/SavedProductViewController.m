@@ -7,18 +7,15 @@
 //
 
 #import "SavedProductViewController.h"
+#import "SavedProductDetailModelManager.h"
+
 #import "UINavigationController+Customize.h"
 #import "DictionaryHelper.h"
+
 #import "TmpSavedProduct.h"
-#import "SavedProductDetailModelManager.h"
-#import "TmpCart.h"
-#import "AddToCartViewController.h"
-
-#import "NewViewController.h"
-
-#import "BaseMemberAreaViewController.h"
 
 #import "IIViewDeckController.h"
+#import "SVProgressHUD.h"
 
 
 
@@ -79,13 +76,14 @@
 
     // setup add bookmark button
     
-	UIButton* editBookmarkButton = [self.navigationController createNavigationBarButtonWithText:NSLocalizedString(@"編輯", @"ItemListViewController") 
-                                                                                           icon:CustomizeButtonIconEdit 
-                                                                                  iconPlacement:CustomizeButtonIconPlacementLeft 
-                                                                                         target:self 
-                                                                                         action:@selector(beginEditBookmarks)];
-	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:editBookmarkButton] autorelease];
- 
+    UISegmentedControl *seg = [[[UISegmentedControl alloc] initWithItems:@[[UIImage imageNamed:@"Shopping cart hide"], [UIImage imageNamed:@"Favorites"]]] autorelease];
+    seg.selectedSegmentIndex = 1;
+    seg.frame = CGRectMake(0, 0, 66, 27);
+    seg.momentary = NO;
+    seg.segmentedControlStyle = UISegmentedControlStyleBar;
+    [seg addTarget:self action:@selector(switchMode:) forControlEvents:UIControlEventValueChanged];
+    
+	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:seg] autorelease];
 }
 
 #pragma mark - theme change related
@@ -306,12 +304,68 @@
 
 #pragma mark - user interaction
 
+- (void)switchMode:(id)sender
+{
+    UISegmentedControl *seg = (UISegmentedControl *)sender;
+    
+    if(seg.selectedSegmentIndex == 0)
+    {
+        [seg setImage:[UIImage imageNamed:@"Shopping cart"] forSegmentAtIndex:0];
+        [seg setImage:[UIImage imageNamed:@"Favorites hide"] forSegmentAtIndex:1];
+        
+        if(self.appManager.isSignedIn == NO)
+        {
+            [self showModalSignInViewController:^{
+                
+                if(self.appManager.isSignedIn == YES)
+                {
+                    if(self.shoppingCartVC == nil)
+                    {
+                        _shoppingCartVC = [[ShoppingCartViewController alloc] init];
+                        [self.view addSubview:_shoppingCartVC.view];
+                    }
+                    
+                    [self.shoppingCartVC viewWillAppear:NO];
+                    self.shoppingCartVC.view.hidden = NO;
+                }
+                else
+                {
+                    [SVProgressHUD showErrorWithStatus:@"請先登入"];
+                    seg.selectedSegmentIndex = 1;
+                }
+                
+            }];
+        }
+        else
+        {
+            if(self.shoppingCartVC == nil)
+            {
+                _shoppingCartVC = [[ShoppingCartViewController alloc] init];
+                [self.view addSubview:_shoppingCartVC.view];
+            }
+            
+            [self.shoppingCartVC viewWillAppear:NO];
+            self.shoppingCartVC.view.hidden = NO;
+        }
+        
+    }
+    else
+    {
+        [seg setImage:[UIImage imageNamed:@"Shopping cart hide"] forSegmentAtIndex:0];
+        [seg setImage:[UIImage imageNamed:@"Favorites"] forSegmentAtIndex:1];
+        
+        [self.shoppingCartVC viewWillDisappear:NO];
+        self.shoppingCartVC.view.hidden = YES;
+    }
+}
+
 - (void)showMemberSidebar:(id)sender
 {
-    if([self.viewDeckController isSideClosed:IIViewDeckRightSide])
-        [self.viewDeckController openRightViewAnimated:YES];
+    IIViewDeckController *vdc = (IIViewDeckController *)self.appDelegate.window.rootViewController;
+    if([vdc isSideClosed:IIViewDeckRightSide])
+        [vdc openRightViewAnimated:YES];
     else
-        [self.viewDeckController closeRightViewAnimated:YES];
+        [vdc closeRightViewAnimated:YES];
 }
 
 @end

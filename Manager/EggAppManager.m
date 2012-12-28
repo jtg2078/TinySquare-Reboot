@@ -728,6 +728,62 @@ static EggAppManager* singletonManager = nil;
     }];
 }
 
+- (void)updateShoppingCartForPid:(NSNumber *)pid
+                           count:(NSNumber *)count
+                         success:(void (^)(int code, NSString *msg))success
+                         failure:(void (^)(NSString *errorMessage, NSError *error))failure
+{
+    NSDictionary *params = @{
+        @"orderid": self.cartReal[CART_KEY_orderid],
+        @"pid": pid,
+        @"count": count,
+    };
+    
+    [self.httpClient postPath:@"Buy.svc/CartModify" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSError *error = nil;
+        NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData:responseObject
+                                                             options:NSJSONReadingAllowFragments
+                                                               error:&error];
+        
+        NSLog(@"Buy.svc/CartModify: %@", [self prettyPrintDict:self.cartReal]);
+        
+        NSString *msg = [JSON[JSON_KEY_msg] isKindOfClass:[NSNull class]] ? @"" : JSON[JSON_KEY_msg];
+        
+        if(success)
+            success([JSON[JSON_KEY_code] intValue], msg);
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        
+        if(failure)
+            failure(@"更新購物車失敗", error);
+        
+    }];
+}
+
+- (void)updateShoppingCartWith:(NSArray *)items
+                         index:(int)index
+                       success:(void (^)(int code, NSString *msg))success
+                       failure:(void (^)(NSString *errorMessage, NSError *error))failure
+{
+    [self updateShoppingCartForPid:items[index][CART_ITEM_KEY_pid]
+                             count:items[index][CART_ITEM_KEY_size]
+                           success:^(int code, NSString *msg) {
+                               
+                               if(index < items.count - 1)
+                               {
+                                   [self updateShoppingCartWith:items index:index + 1 success:success failure:failure];
+                               }
+                               else
+                               {
+                                   if(success)
+                                       success(code, msg);
+                               }
+                               
+                           } failure:failure];
+}
+
+/*
 - (void)updateShoppingCartWith:(NSArray *)items
                          index:(int)index
                        success:(void (^)(int code, NSString *msg))success
@@ -771,6 +827,7 @@ static EggAppManager* singletonManager = nil;
             failure(@"更新購物車失敗", error);
     }];
 }
+ */
 
 - (void)getLatestShoppingCart:(void (^)(int code, NSString *msg))success
                       failure:(void (^)(NSString *errorMessage, NSError *error))failure
