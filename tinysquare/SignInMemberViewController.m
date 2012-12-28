@@ -104,7 +104,7 @@
           INFO_KEY_CONTROL: self.userPwdTextField,
           INFO_KEY_OPTIONAL: @NO,
           INFO_KEY_KEYBOARD: @(UIKeyboardTypeASCIICapable),
-          INFO_KEY_VALIDATION: [[^BOOL(){return self.userPwdTextField.text.length >=6 && self.userPwdTextField.text.length <=13;} copy] autorelease],
+          INFO_KEY_VALIDATION: [[^BOOL(){return self.userPwdTextField.text.length;} copy] autorelease],
           INFO_KEY_VALIDATION_MSG: @"帳號/密碼不正確",
           } mutableCopy] autorelease]
     ];

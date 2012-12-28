@@ -156,7 +156,7 @@ static EggAppManager* singletonManager = nil;
                failure:(void (^)(NSString *errorMessage, NSError *error))failure
 {
     NSDictionary *params = @{
-        @"appid": API_APP_ID,
+        @"appid": @(API_APP_ID.intValue),
         @"appversion": @(3), //[[NSBundle mainBundle] infoDictionary][@"CFBundleVersion"],
         @"imei": [[UIDevice currentDevice] uniqueDeviceIdentifier],
         @"platform":@(2),
@@ -198,7 +198,7 @@ static EggAppManager* singletonManager = nil;
 {
     NSDictionary *params = @{
         @"fcid": self.fcid,
-        @"appid": API_APP_ID,
+        @"appid": @(API_APP_ID.intValue),
         @"email": email,
         @"password":password,
         @"name":name,
@@ -216,7 +216,7 @@ static EggAppManager* singletonManager = nil;
         NSLog(@"Member.svc/Register: %@", JSON);
         
         if([JSON[@"status"] boolValue] == YES)
-        {
+        {            
             if(success)
                 success(JSON[@"message"]);
         }
@@ -331,7 +331,7 @@ static EggAppManager* singletonManager = nil;
              failure:(void (^)(NSString *errorMessage, NSError *error))failure
 {
     NSDictionary *params = @{
-        @"appid": API_APP_ID,
+        @"appid": @(API_APP_ID.intValue),
         @"email": email,
         @"password": password,
     };
@@ -507,6 +507,61 @@ static EggAppManager* singletonManager = nil;
     self.cartTemp[pid] = @(num.intValue + count.intValue);
 }
 
+- (void)addToRealCartProduct:(NSNumber *)pid
+                       count:(NSNumber *)count
+                   needLogin:(void (^)())login
+                     success:(void (^)(int code, NSString *msg))success
+                     failure:(void (^)(NSString *errorMessage, NSError *error))failure
+{
+    [self getLatestShoppingCart:^(int code, NSString *msg) {
+        
+        if(code == GET_CART_CODE_not_logged_in)
+        {
+            if(login)
+                login();
+        }
+        else if(code == GET_CART_CODE_cart_not_exist)
+        {
+            [self addToTempCartProduct:pid count:count];
+            [self createShoppingCart:success failure:failure];
+        }
+        else if(code == GET_CART_CODE_ok)
+        {
+            // find out current count and add to it
+            NSNumber *updateCount = @(count.intValue);
+            for(NSDictionary *p in self.cartReal[CART_KEY_products])
+            {
+                NSNumber *cartPid = p[CART_ITEM_KEY_pid];
+                if([cartPid isEqualToNumber:pid])
+                {
+                    updateCount = @(count.intValue + [p[CART_ITEM_KEY_size] intValue]);
+                    break;
+                }
+            }
+            
+            NSArray *items = @[@{@"pid":pid, @"size":updateCount}];
+            
+            [self updateShoppingCartWith:items index:0 success:^(int code, NSString *msg) {
+                
+                if(code == UPDATE_CART_CODE_db_add_success ||
+                   code == UPDATE_CART_CODE_db_delete_success ||
+                   code == UPDATE_CART_CODE_db_update_success)
+                {
+                    if(success)
+                        success(code, @"加入購物車成功");
+                }
+                else
+                {
+                    if(failure)
+                        failure(msg, nil);
+                }
+                
+            } failure:failure];
+        }
+        
+    } failure:failure];
+}
+
 - (void)processTempCart:(void (^)())success
               needLogin:(void (^)())login
                 failure:(void (^)(NSString *errorMessage, NSError *error))failure
@@ -554,7 +609,7 @@ static EggAppManager* singletonManager = nil;
             {
                 if(items.count)
                 {
-                    [self updateShoppingCartWith:items index:0 success:^{
+                    [self updateShoppingCartWith:items index:0 success:^(int code, NSString *msg){
                         
                         self.cartTemp = nil;
                         
@@ -586,7 +641,7 @@ static EggAppManager* singletonManager = nil;
         }
         else if(code == GET_CART_CODE_cart_not_exist)
         {
-            [self createShoppingCart:^{
+            [self createShoppingCart:^(int code, NSString *msg) {
                 
                 if(success)
                     success();
@@ -618,7 +673,7 @@ static EggAppManager* singletonManager = nil;
     }];
 }
 
-- (void)createShoppingCart:(void (^)())success
+- (void)createShoppingCart:(void (^)(int code, NSString *msg))success
                    failure:(void (^)(NSString *errorMessage, NSError *error))failure
 {
     if(!self.cartTemp)
@@ -651,8 +706,19 @@ static EggAppManager* singletonManager = nil;
         // clear temp cart
         self.cartTemp = nil;
         
-        if(success)
-            success();
+        int code = [JSON[JSON_KEY_code] intValue];
+        NSString *msg = [JSON[JSON_KEY_msg] isKindOfClass:[NSNull class]] ? @"" : JSON[JSON_KEY_msg];
+        
+        if(code == CREATE_CART_CODE_success)
+        {
+            if(success)
+                success(code, @"購物車建立成功");
+        }
+        else
+        {
+            if(failure)
+                failure(msg, nil);
+        }
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         
@@ -664,7 +730,7 @@ static EggAppManager* singletonManager = nil;
 
 - (void)updateShoppingCartWith:(NSArray *)items
                          index:(int)index
-                       success:(void (^)())success
+                       success:(void (^)(int code, NSString *msg))success
                        failure:(void (^)(NSString *errorMessage, NSError *error))failure
 {
     NSDictionary *params = @{
@@ -681,12 +747,13 @@ static EggAppManager* singletonManager = nil;
     [self.httpClient postPath:@"Buy.svc/CartModify" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
         NSError *error = nil;
-        NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:&error];
-        
-        if([JSON[JSON_KEY_code] intValue] <= 0)
-            [SVProgressHUD showErrorWithStatus:JSON[JSON_KEY_msg]];
+        NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData:responseObject
+                                                             options:NSJSONReadingAllowFragments
+                                                               error:&error];
         
         NSLog(@"Buy.svc/CartModify: %@", [self prettyPrintDict:self.cartReal]);
+        
+        NSString *msg = [JSON[JSON_KEY_msg] isKindOfClass:[NSNull class]] ? @"" : JSON[JSON_KEY_msg];
         
         if(index < items.count - 1)
         {
@@ -695,7 +762,7 @@ static EggAppManager* singletonManager = nil;
         else
         {
             if(success)
-                success();
+                success([JSON[JSON_KEY_code] intValue], msg);
         }
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -716,6 +783,7 @@ static EggAppManager* singletonManager = nil;
         NSLog(@"Buy.svc/GetLatestCart: %@", JSON);
         
         int code = [JSON[JSON_KEY_code] intValue];
+        NSString *msg = [JSON[JSON_KEY_msg] isKindOfClass:[NSNull class]] ? @"" : JSON[JSON_KEY_msg];
         
         if(code == GET_CART_CODE_ok)
         {            
@@ -723,7 +791,7 @@ static EggAppManager* singletonManager = nil;
         }
         
         if(success)
-            success(code, JSON[JSON_KEY_msg]);
+            success(code, msg);
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         

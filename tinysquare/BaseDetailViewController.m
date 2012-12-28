@@ -659,9 +659,26 @@
 {
     if(self.appManager.isSignedIn == YES)
     {
+        NSNumber *pid = [[self.modelManager detailInfo] numberForKey:@"productId"];
+        NSNumber *count = @(1);
+        NSString *msg = [NSString stringWithFormat:@"加到購物車 pid:%@", pid.stringValue];
+        
+        [SVProgressHUD showWithStatus:msg];
+        
+        [self.appManager addToRealCartProduct:pid
+                                        count:count
+                                    needLogin:^{ [SVProgressHUD showErrorWithStatus:@"請先登入"];}
+                                      success:^(int code, NSString *msg) { [SVProgressHUD showSuccessWithStatus:msg];}
+                                      failure:^(NSString *errorMessage, NSError *error) {
+                                          NSString *msg = [NSString stringWithFormat:@"%@ pid: %@", errorMessage, pid.stringValue];
+                                          [SVProgressHUD showErrorWithStatus:msg];
+                                      }];
+        
+        /*
         [self.appManager addToTempCartProduct:[[self.modelManager detailInfo] numberForKey:@"productId"] count:@(1)];
         
         [SVProgressHUD showSuccessWithStatus:@"加到購物車"];
+         */
     }
 }
 

@@ -85,11 +85,17 @@
 
 - (void)addToTempCartProduct:(NSNumber *)pid count:(NSNumber *)count;
 
+- (void)addToRealCartProduct:(NSNumber *)pid
+                       count:(NSNumber *)count
+                   needLogin:(void (^)())login
+                     success:(void (^)(int code, NSString *msg))success
+                     failure:(void (^)(NSString *errorMessage, NSError *error))failure;
+
 - (void)processTempCart:(void (^)())success
               needLogin:(void (^)())login
                 failure:(void (^)(NSString *errorMessage, NSError *error))failure;
 
-- (void)createShoppingCart:(void (^)())success
+- (void)createShoppingCart:(void (^)(int code, NSString *msg))success
                    failure:(void (^)(NSString *errorMessage, NSError *error))failure;
 
 - (void)getLatestShoppingCart:(void (^)(int code, NSString *msg))success

@@ -85,7 +85,7 @@
       INFO_KEY_CONTROL: self.oldPwdTextField,
       INFO_KEY_OPTIONAL: @NO,
       INFO_KEY_KEYBOARD: @(UIKeyboardTypeASCIICapable),
-      INFO_KEY_VALIDATION: [[^BOOL(){return self.oldPwdTextField.text.length >=6 && self.oldPwdTextField.text.length <=13 && [self.oldPwdTextField.text isEqualToString:self.appManager.userInfo[@"password"]];} copy] autorelease],
+      INFO_KEY_VALIDATION: [[^BOOL(){return self.oldPwdTextField.text.length && [self.oldPwdTextField.text isEqualToString:self.appManager.userInfo[@"password"]];} copy] autorelease],
       INFO_KEY_VALIDATION_MSG: @"密碼不正確",
       } mutableCopy] autorelease],
     [[@{

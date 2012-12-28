@@ -30,18 +30,28 @@ extern NSString * const CART_ITEM_KEY_available;
 extern NSString * const CART_ITEM_KEY_isnofee;
 extern NSString * const CART_ITEM_KEY_amount;
 
-
 extern int const GET_CART_CODE_cart_not_exist;
 extern int const GET_CART_CODE_not_logged_in;
 extern int const GET_CART_CODE_unknown_state;
 extern int const GET_CART_CODE_ok;
 
-/*
- -2: 找不到訂單資料。
- -1: 無法取得使用者資料，請先登入帳號。(請加驗證的cookie加入request中)
- 0: 未知。
- 1: 正常。
- */
+extern int const UPDATE_CART_CODE_db_update_error;
+extern int const UPDATE_CART_CODE_db_delete_error;
+extern int const UPDATE_CART_CODE_db_add_error;
+extern int const UPDATE_CART_CODE_out_of_stock;
+extern int const UPDATE_CART_CODE_pid_not_found;
+extern int const UPDATE_CART_CODE_cart_not_found;
+extern int const UPDATE_CART_CODE_not_logged_in;
+extern int const UPDATE_CART_CODE_unknown;
+extern int const UPDATE_CART_CODE_db_add_success;
+extern int const UPDATE_CART_CODE_db_update_success;
+extern int const UPDATE_CART_CODE_db_delete_success;
+
+extern int const CREATE_CART_CODE_pid_not_found;
+extern int const CREATE_CART_CODE_nothing_added;
+extern int const CREATE_CART_CODE_not_logged_in;
+extern int const CREATE_CART_CODE_unknown;
+extern int const CREATE_CART_CODE_success;
 
 
 /*

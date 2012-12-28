@@ -34,3 +34,21 @@ int const GET_CART_CODE_cart_not_exist = -2;
 int const GET_CART_CODE_not_logged_in = -1;
 int const GET_CART_CODE_unknown_state = 0;
 int const GET_CART_CODE_ok = 1;
+
+int const UPDATE_CART_CODE_db_update_error = -13;
+int const UPDATE_CART_CODE_db_delete_error = -12;
+int const UPDATE_CART_CODE_db_add_error = -11;
+int const UPDATE_CART_CODE_out_of_stock = -4;
+int const UPDATE_CART_CODE_pid_not_found = -3;
+int const UPDATE_CART_CODE_cart_not_found = -2;
+int const UPDATE_CART_CODE_not_logged_in = -1;
+int const UPDATE_CART_CODE_unknown = 0;
+int const UPDATE_CART_CODE_db_add_success = 1;
+int const UPDATE_CART_CODE_db_update_success = 2;
+int const UPDATE_CART_CODE_db_delete_success = 3;
+
+int const CREATE_CART_CODE_pid_not_found = -3;
+int const CREATE_CART_CODE_nothing_added = -2;
+int const CREATE_CART_CODE_not_logged_in = -1;
+int const CREATE_CART_CODE_unknown = 0;
+int const CREATE_CART_CODE_success = 1;
