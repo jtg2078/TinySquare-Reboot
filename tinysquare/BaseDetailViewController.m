@@ -659,7 +659,7 @@
 {
     if(self.appManager.isSignedIn == YES)
     {
-        [self.appManager addToCartProduct:[[self.modelManager detailInfo] numberForKey:@"productId"] count:@(1)];
+        [self.appManager addToTempCartProduct:[[self.modelManager detailInfo] numberForKey:@"productId"] count:@(1)];
         
         [SVProgressHUD showSuccessWithStatus:@"加到購物車"];
     }

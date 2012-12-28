@@ -12,6 +12,7 @@
 #import "SignInMemberViewController.h"
 #import "ChangeMemeberPasswordViewController.h"
 #import "TermsOfServiceViewController.h"
+#import "ShoppingCartViewController.h"
 
 #import "IIViewDeckController.h"
 #import "SVProgressHUD.h"
@@ -377,7 +378,8 @@
             {
                 if ([info[@"title"] isEqualToString:SHOPPING_RECORD])
                 {
-                    
+                    ShoppingCartViewController *scvc= [[[ShoppingCartViewController alloc] init] autorelease];
+                     [self.viewDeckController rightViewPushViewControllerOverCenterController:scvc];
                 }
                 else if ([info[@"title"] isEqualToString:CUSTOMER_FEEDBACK])
                 {

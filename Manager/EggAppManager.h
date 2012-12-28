@@ -83,12 +83,16 @@
 
 // shopping cart related
 
-- (void)addToCartProduct:(NSNumber *)pid count:(NSNumber *)count;
+- (void)addToTempCartProduct:(NSNumber *)pid count:(NSNumber *)count;
+
+- (void)processTempCart:(void (^)())success
+              needLogin:(void (^)())login
+                failure:(void (^)(NSString *errorMessage, NSError *error))failure;
 
 - (void)createShoppingCart:(void (^)())success
                    failure:(void (^)(NSString *errorMessage, NSError *error))failure;
 
-- (void)getLatestShoppingCart:(void (^)())success
+- (void)getLatestShoppingCart:(void (^)(int code, NSString *msg))success
                       failure:(void (^)(NSString *errorMessage, NSError *error))failure;
 
 @end

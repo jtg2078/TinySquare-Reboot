@@ -9,6 +9,8 @@
 #import "EggAppManager.h"
 #import "UIDevice+IdentifierAddition.h"
 #import "Constant.h"
+#import "SVProgressHUD.h"
+#import "JSONKit.h"
 
 typedef void (^AUTH_USER_CALLBACK_SUCCESS)();
 typedef void (^AUTH_USER_CALLBACK_FAILURE)(NSString *errorMessage, NSError *error);
@@ -491,7 +493,7 @@ static EggAppManager* singletonManager = nil;
 
 #pragma mark - shopping cart related
 
-- (void)addToCartProduct:(NSNumber *)pid count:(NSNumber *)count
+- (void)addToTempCartProduct:(NSNumber *)pid count:(NSNumber *)count
 {
     if(!self.cartTemp)
         self.cartTemp = [NSMutableDictionary dictionary];
@@ -505,6 +507,117 @@ static EggAppManager* singletonManager = nil;
     self.cartTemp[pid] = @(num.intValue + count.intValue);
 }
 
+- (void)processTempCart:(void (^)())success
+              needLogin:(void (^)())login
+                failure:(void (^)(NSString *errorMessage, NSError *error))failure
+{
+    /*
+     - get latest cart from server
+        - cart existed
+            - go over all the items in the cart and compare with the temp cart
+                - if item is on both temp cart and cart
+                    - add the size from temp cart and update the cart and send to server
+                - if item is on temp cart but not on cart
+                    - modify the cart by adding the item to with size from temp cart
+                - if item is on cart but on on temp cart
+                    - do nothing
+            - get the cart from server again at the end
+        - cart does not exist
+            - create cart with items from temp cart
+     - clear items on temp cart
+     */
+    
+    [self getLatestShoppingCart:^(int code, NSString *msg) {
+        
+        if(code == GET_CART_CODE_ok)
+        {
+            for(NSDictionary *p in self.cartReal[CART_KEY_products])
+            {
+                NSNumber *pid = p[CART_ITEM_KEY_pid];
+                NSNumber *count = self.cartTemp[pid];
+                if(count)
+                    self.cartTemp[pid] = @(count.intValue + [p[CART_ITEM_KEY_size] intValue]);
+            }
+            
+            // change cartTemp to array
+            __block NSMutableArray *items = [NSMutableArray array];
+            [self.cartTemp enumerateKeysAndObjectsUsingBlock:^(id pid, id count, BOOL *stop) {
+                [items addObject:@{@"pid":pid, @"size":count}];
+            }];
+            
+            if(items.count == 0 && self.cartReal.count == 0)
+            {
+                if(failure)
+                    failure(@"購物車是空的", nil);
+            }
+            else
+            {
+                if(items.count)
+                {
+                    [self updateShoppingCartWith:items index:0 success:^{
+                        
+                        self.cartTemp = nil;
+                        
+                        [self getLatestShoppingCart:^(int code, NSString *msg) {
+                            
+                            if(success)
+                                success();
+                            
+                            
+                        } failure:^(NSString *errorMessage, NSError *error) {
+                            
+                            if(failure)
+                                failure(errorMessage, error);
+                            
+                        }];
+                        
+                    } failure:^(NSString *errorMessage, NSError *error) {
+                        
+                        if(failure)
+                            failure(errorMessage, error);
+                    }];
+                }
+                else
+                {
+                    if(success)
+                        success();
+                }
+            }
+        }
+        else if(code == GET_CART_CODE_cart_not_exist)
+        {
+            [self createShoppingCart:^{
+                
+                if(success)
+                    success();
+                
+            } failure:^(NSString *errorMessage, NSError *error) {
+                
+                if(failure)
+                    failure(errorMessage, error);
+                
+            }];
+            
+        }
+        else if(code == GET_CART_CODE_not_logged_in)
+        {
+            if(login)
+                login();
+        }
+        else
+        {
+            if(failure)
+                failure(msg, nil);
+        }
+        
+    } failure:^(NSString *errorMessage, NSError *error) {
+        
+        if(failure)
+            failure(errorMessage, error);
+        
+    }];
+}
+
 - (void)createShoppingCart:(void (^)())success
                    failure:(void (^)(NSString *errorMessage, NSError *error))failure
 {
@@ -516,6 +629,7 @@ static EggAppManager* singletonManager = nil;
         return;
     }
     
+    // change cartTemp to array
     __block NSMutableArray *array = [NSMutableArray array];
     [self.cartTemp enumerateKeysAndObjectsUsingBlock:^(id pid, id count, BOOL *stop) {
         [array addObject:@{@"pid":pid, @"size":count}];
@@ -530,7 +644,7 @@ static EggAppManager* singletonManager = nil;
         NSError *error = nil;
         NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:&error];
         
-        self.cartReal = JSON;
+        self.cartReal = [JSON[JSON_KEY_rsp] objectFromJSONString];
         
         NSLog(@"Buy.svc/CartCreate: %@", [self prettyPrintDict:self.cartReal]);
         
@@ -548,12 +662,50 @@ static EggAppManager* singletonManager = nil;
     }];
 }
 
-- (void)updateShoppingCart
+- (void)updateShoppingCartWith:(NSArray *)items
+                         index:(int)index
+                       success:(void (^)())success
+                       failure:(void (^)(NSString *errorMessage, NSError *error))failure
 {
+    NSDictionary *params = @{
+        @"orderid": self.cartReal[CART_KEY_orderid],
+        @"pid": items[index][CART_ITEM_KEY_pid],
+        @"count": items[index][CART_ITEM_KEY_size],
+    };
     
+    [SVProgressHUD showWithStatus:[NSString stringWithFormat:@"更新購物車:%@ pid:%@ size:%@",
+                                   params[@"orderid"],
+                                   params[@"pid"],
+                                   params[@"count"]]];
+    
+    [self.httpClient postPath:@"Buy.svc/CartModify" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSError *error = nil;
+        NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:&error];
+        
+        if([JSON[JSON_KEY_code] intValue] <= 0)
+            [SVProgressHUD showErrorWithStatus:JSON[JSON_KEY_msg]];
+        
+        NSLog(@"Buy.svc/CartModify: %@", [self prettyPrintDict:self.cartReal]);
+        
+        if(index < items.count - 1)
+        {
+            [self updateShoppingCartWith:items index:index + 1 success:success failure:failure];
+        }
+        else
+        {
+            if(success)
+                success();
+        }
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        
+        if(failure)
+            failure(@"更新購物車失敗", error);
+    }];
 }
 
-- (void)getLatestShoppingCart:(void (^)())success
+- (void)getLatestShoppingCart:(void (^)(int code, NSString *msg))success
                       failure:(void (^)(NSString *errorMessage, NSError *error))failure
 {
     [self.httpClient postPath:@"Buy.svc/GetLatestCart" parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -563,8 +715,15 @@ static EggAppManager* singletonManager = nil;
         
         NSLog(@"Buy.svc/GetLatestCart: %@", JSON);
         
+        int code = [JSON[JSON_KEY_code] intValue];
+        
+        if(code == GET_CART_CODE_ok)
+        {            
+            self.cartReal = [JSON[JSON_KEY_rsp] objectFromJSONString];
+        }
+        
         if(success)
-            success();
+            success(code, JSON[JSON_KEY_msg]);
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         

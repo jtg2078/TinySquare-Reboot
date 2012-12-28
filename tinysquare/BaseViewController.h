@@ -30,6 +30,7 @@
 #import "ASIHTTPRequest.h"
 #import "ASIFormDataRequest.h"
 #import "EggAppManager.h"
+#import "AppDelegate.h"
 
 typedef void (^BASIC_CALLBACK)();
 
@@ -41,6 +42,7 @@ typedef void (^BASIC_CALLBACK)();
 }
 
 @property (nonatomic, assign) EggAppManager *appManager;
+@property (nonatomic, assign) AppDelegate *appDelegate;
 
 - (ASIHTTPRequest*) requestWithURL:(NSString*) s;
 - (ASIFormDataRequest*) formRequestWithURL:(NSString*) s;

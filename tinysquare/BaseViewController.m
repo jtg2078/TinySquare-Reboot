@@ -109,6 +109,7 @@
 												 name:@"com.fingertipcreative.tinysquare.themeChange" object:nil];
     
     self.appManager = [EggAppManager sharedInstance];
+    self.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 }
 
 - (void) viewDidUnload {
