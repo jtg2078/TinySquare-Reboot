@@ -53,27 +53,11 @@ extern int const CREATE_CART_CODE_not_logged_in;
 extern int const CREATE_CART_CODE_unknown;
 extern int const CREATE_CART_CODE_success;
 
+extern int const GET_ALL_CARTS_ok;
 
-/*
- {
- "code": 1,
- "msg": null,
- "ok": true,
- "rsp": "{
-    \"status\":2,
-    \"orderid\":524,
-    \"products\":[{
-        \"pid\":478,
-        \"pname\":\"BONE寶家最愛用的【PET GEAR愛踏寵物樓梯 二階（大)】\",
-        \"size\":1,
-        \"price\":1280,
-        \"available\":-1,
-        \"isnofee\":true,
-        \"amount\":1280
-        }],
-    \"shippingfees\":0,
-    \"noshippingfee\":999,
-    \"total\":1280
-    }"
- }
-*/
+extern int const CART_STATUS_not_created;
+extern int const CART_STATUS_temp;
+extern int const CART_STATUS_proceeding;
+extern int const CART_STATUS_in_transaction;
+extern int const CART_STATUS_success;
+extern int const CART_STATUS_failure;

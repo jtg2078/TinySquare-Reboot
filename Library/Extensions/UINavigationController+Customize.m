@@ -325,6 +325,9 @@
         case CustomizeButtonIconShop:
             [button setImage:[UIImage imageNamed:@"icon_Shop"] forState:UIControlStateNormal];
             break;
+        case CustomizeButtonIconCollapse:
+            [button setImage:[UIImage imageNamed:@"pack up"] forState:UIControlStateNormal];
+            break;
         default:
             break;
     }
@@ -478,6 +481,10 @@
         case CustomizeButtonIconShop:
             [button setImage:[UIImage imageNamed:@"icon_Shop"] forState:UIControlStateNormal];
             buttonWidth=61;
+            break;
+        case CustomizeButtonIconCollapse:
+            [button setImage:[UIImage imageNamed:@"pack up"] forState:UIControlStateNormal];
+            buttonWidth=34;
             break;
     
         default:

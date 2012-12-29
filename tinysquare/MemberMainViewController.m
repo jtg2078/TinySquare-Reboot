@@ -13,6 +13,7 @@
 #import "ChangeMemeberPasswordViewController.h"
 #import "TermsOfServiceViewController.h"
 #import "ShoppingCartViewController.h"
+#import "OrderHistoryViewController.h"
 
 #import "IIViewDeckController.h"
 #import "SVProgressHUD.h"
@@ -378,9 +379,31 @@
             {
                 if ([info[@"title"] isEqualToString:SHOPPING_RECORD])
                 {
-                    [SVProgressHUD showErrorWithStatus:@"還沒做"];
-                    //ShoppingCartViewController *scvc= [[[ShoppingCartViewController alloc] init] autorelease];
-                    //[self.viewDeckController rightViewPushViewControllerOverCenterController:scvc];
+                    [self.appManager authenticateUser:^{
+                        
+                        OrderHistoryViewController *ohvc= [[[OrderHistoryViewController alloc] init] autorelease];
+                        [self.viewDeckController rightViewPushViewControllerOverCenterController:ohvc];
+                        
+                    } failure:^(NSString *errorMessage, NSError *error) {
+                        
+                        [SVProgressHUD showErrorWithStatus:errorMessage];
+                        
+                    } signIn:^{
+                        
+                        [self showModalSignInViewController:^{
+                            
+                            if(self.appManager.isSignedIn == YES)
+                            {
+                                OrderHistoryViewController *ohvc= [[[OrderHistoryViewController alloc] init] autorelease];
+                                [self.viewDeckController rightViewPushViewControllerOverCenterController:ohvc];
+                            }
+                            else
+                            {
+                                [SVProgressHUD showErrorWithStatus:@"請先登入"];
+                            }
+                            
+                        }];
+                    }];
                 }
                 else if ([info[@"title"] isEqualToString:CUSTOMER_FEEDBACK])
                 {

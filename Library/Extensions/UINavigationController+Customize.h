@@ -32,6 +32,7 @@ typedef enum{
     CustomizeButtonIconMembership2,
     CustomizeButtonIconFavortie,
     CustomizeButtonIconShop,
+    CustomizeButtonIconCollapse,
 } CustomizeButtonIcon;
 
 @interface UINavigationController (Customize)

@@ -52,3 +52,13 @@ int const CREATE_CART_CODE_nothing_added = -2;
 int const CREATE_CART_CODE_not_logged_in = -1;
 int const CREATE_CART_CODE_unknown = 0;
 int const CREATE_CART_CODE_success = 1;
+
+int const GET_ALL_CARTS_ok = 1;
+
+int const CART_STATUS_not_created = 0;
+int const CART_STATUS_temp = 1;
+int const CART_STATUS_proceeding = 2;
+int const CART_STATUS_in_transaction = 3;
+int const CART_STATUS_success = 4;
+int const CART_STATUS_failure = 5;
+

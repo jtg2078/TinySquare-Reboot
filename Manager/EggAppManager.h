@@ -31,6 +31,7 @@
 @property (nonatomic, retain) NSNumber *fcid;
 @property (nonatomic, retain) NSMutableDictionary *cartTemp;
 @property (nonatomic, retain) NSDictionary *cartReal;
+@property (nonatomic, retain) NSArray *allCarts;
 
 // device related
 
@@ -105,5 +106,8 @@
 
 - (void)getLatestShoppingCart:(void (^)(int code, NSString *msg))success
                       failure:(void (^)(NSString *errorMessage, NSError *error))failure;
+
+- (void)getAllShoppingCarts:(void (^)(int code, NSString *msg))success
+                    failure:(void (^)(NSString *errorMessage, NSError *error))failure;
 
 @end
