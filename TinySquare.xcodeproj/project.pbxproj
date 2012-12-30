@@ -27,6 +27,20 @@
 		1B7E82D7164A6DD500A1FD1C /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B7E82D5164A6DD500A1FD1C /* icon@2x.png */; };
 		1B8985FD1577680C00677403 /* BaseCartViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B8985FC1577680B00677403 /* BaseCartViewController.m */; };
 		1B89860115778EE100677403 /* CartItemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B89860015778EE000677403 /* CartItemCell.m */; };
+		960C0A5C1690728C003D8C9F /* CheckOutPaymentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 960C0A5A1690728C003D8C9F /* CheckOutPaymentViewController.m */; };
+		960C0A5D1690728C003D8C9F /* CheckOutPaymentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 960C0A5B1690728C003D8C9F /* CheckOutPaymentViewController.xib */; };
+		960C0A6C1690776D003D8C9F /* column2.png in Resources */ = {isa = PBXBuildFile; fileRef = 960C0A601690776D003D8C9F /* column2.png */; };
+		960C0A6D1690776D003D8C9F /* column2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 960C0A611690776D003D8C9F /* column2@2x.png */; };
+		960C0A6E1690776D003D8C9F /* column3.png in Resources */ = {isa = PBXBuildFile; fileRef = 960C0A621690776D003D8C9F /* column3.png */; };
+		960C0A6F1690776D003D8C9F /* column3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 960C0A631690776D003D8C9F /* column3@2x.png */; };
+		960C0A701690776D003D8C9F /* payment confirm.png in Resources */ = {isa = PBXBuildFile; fileRef = 960C0A641690776D003D8C9F /* payment confirm.png */; };
+		960C0A711690776D003D8C9F /* payment confirm@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 960C0A651690776D003D8C9F /* payment confirm@2x.png */; };
+		960C0A721690776D003D8C9F /* payment function-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 960C0A661690776D003D8C9F /* payment function-bg.png */; };
+		960C0A731690776D003D8C9F /* payment function-bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 960C0A671690776D003D8C9F /* payment function-bg@2x.png */; };
+		960C0A741690776D003D8C9F /* process bar3.png in Resources */ = {isa = PBXBuildFile; fileRef = 960C0A681690776D003D8C9F /* process bar3.png */; };
+		960C0A751690776D003D8C9F /* process bar3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 960C0A691690776D003D8C9F /* process bar3@2x.png */; };
+		960C0A761690776D003D8C9F /* secure icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 960C0A6A1690776D003D8C9F /* secure icon.png */; };
+		960C0A771690776D003D8C9F /* secure icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 960C0A6B1690776D003D8C9F /* secure icon@2x.png */; };
 		9614423014DA739400AA4FEB /* commonBgLightGreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 9614421F14DA739400AA4FEB /* commonBgLightGreen.png */; };
 		9614423114DA739400AA4FEB /* commonBgLightGreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9614422014DA739400AA4FEB /* commonBgLightGreen@2x.png */; };
 		9614423214DA739400AA4FEB /* detailViewBgLightGreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 9614422114DA739400AA4FEB /* detailViewBgLightGreen.png */; };
@@ -1052,6 +1066,21 @@
 		9601B9E11519AFC700957460 /* tinysquare 12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "tinysquare 12.xcdatamodel"; sourceTree = "<group>"; };
 		9604DEDC15173A29007157F2 /* tinysquare 6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "tinysquare 6.xcdatamodel"; sourceTree = "<group>"; };
 		9604DEDE15174660007157F2 /* tinysquare 7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "tinysquare 7.xcdatamodel"; sourceTree = "<group>"; };
+		960C0A591690728C003D8C9F /* CheckOutPaymentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckOutPaymentViewController.h; sourceTree = "<group>"; };
+		960C0A5A1690728C003D8C9F /* CheckOutPaymentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckOutPaymentViewController.m; sourceTree = "<group>"; };
+		960C0A5B1690728C003D8C9F /* CheckOutPaymentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CheckOutPaymentViewController.xib; sourceTree = "<group>"; };
+		960C0A601690776D003D8C9F /* column2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = column2.png; sourceTree = "<group>"; };
+		960C0A611690776D003D8C9F /* column2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "column2@2x.png"; sourceTree = "<group>"; };
+		960C0A621690776D003D8C9F /* column3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = column3.png; sourceTree = "<group>"; };
+		960C0A631690776D003D8C9F /* column3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "column3@2x.png"; sourceTree = "<group>"; };
+		960C0A641690776D003D8C9F /* payment confirm.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "payment confirm.png"; sourceTree = "<group>"; };
+		960C0A651690776D003D8C9F /* payment confirm@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "payment confirm@2x.png"; sourceTree = "<group>"; };
+		960C0A661690776D003D8C9F /* payment function-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "payment function-bg.png"; sourceTree = "<group>"; };
+		960C0A671690776D003D8C9F /* payment function-bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "payment function-bg@2x.png"; sourceTree = "<group>"; };
+		960C0A681690776D003D8C9F /* process bar3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "process bar3.png"; sourceTree = "<group>"; };
+		960C0A691690776D003D8C9F /* process bar3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "process bar3@2x.png"; sourceTree = "<group>"; };
+		960C0A6A1690776D003D8C9F /* secure icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "secure icon.png"; sourceTree = "<group>"; };
+		960C0A6B1690776D003D8C9F /* secure icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "secure icon@2x.png"; sourceTree = "<group>"; };
 		9614421F14DA739400AA4FEB /* commonBgLightGreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = commonBgLightGreen.png; sourceTree = "<group>"; };
 		9614422014DA739400AA4FEB /* commonBgLightGreen@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "commonBgLightGreen@2x.png"; sourceTree = "<group>"; };
 		9614422114DA739400AA4FEB /* detailViewBgLightGreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = detailViewBgLightGreen.png; sourceTree = "<group>"; };
@@ -2414,6 +2443,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		960C0A5F1690776D003D8C9F /* check out payment */ = {
+			isa = PBXGroup;
+			children = (
+				960C0A601690776D003D8C9F /* column2.png */,
+				960C0A611690776D003D8C9F /* column2@2x.png */,
+				960C0A621690776D003D8C9F /* column3.png */,
+				960C0A631690776D003D8C9F /* column3@2x.png */,
+				960C0A641690776D003D8C9F /* payment confirm.png */,
+				960C0A651690776D003D8C9F /* payment confirm@2x.png */,
+				960C0A661690776D003D8C9F /* payment function-bg.png */,
+				960C0A671690776D003D8C9F /* payment function-bg@2x.png */,
+				960C0A681690776D003D8C9F /* process bar3.png */,
+				960C0A691690776D003D8C9F /* process bar3@2x.png */,
+				960C0A6A1690776D003D8C9F /* secure icon.png */,
+				960C0A6B1690776D003D8C9F /* secure icon@2x.png */,
+			);
+			path = "check out payment";
+			sourceTree = "<group>";
+		};
 		961CA2ED14AC0F520097E6E5 /* settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -4431,6 +4479,7 @@
 		96F9CEAB1683547900FC8EC3 /* Asset */ = {
 			isa = PBXGroup;
 			children = (
+				960C0A5F1690776D003D8C9F /* check out payment */,
 				96DD61F11690060000FC8A27 /* check out detail two */,
 				96DD61DB168FDFD900FC8A27 /* check out detail one */,
 				96DD6183168EDAEB00FC8A27 /* order history */,
@@ -4888,6 +4937,9 @@
 				96DD6214169023F600FC8A27 /* InvoiceDetailCell.h */,
 				96DD6215169023F600FC8A27 /* InvoiceDetailCell.m */,
 				96DD621216901F0A00FC8A27 /* InvoiceDetailCell.xib */,
+				960C0A591690728C003D8C9F /* CheckOutPaymentViewController.h */,
+				960C0A5A1690728C003D8C9F /* CheckOutPaymentViewController.m */,
+				960C0A5B1690728C003D8C9F /* CheckOutPaymentViewController.xib */,
 			);
 			name = "my bookmarks";
 			sourceTree = "<group>";
@@ -5694,6 +5746,19 @@
 				96DD62101690060000FC8A27 /* detail2 - write&payment.png in Resources */,
 				96DD62111690060000FC8A27 /* detail2 - write&payment@2x.png in Resources */,
 				96DD621316901F0B00FC8A27 /* InvoiceDetailCell.xib in Resources */,
+				960C0A5D1690728C003D8C9F /* CheckOutPaymentViewController.xib in Resources */,
+				960C0A6C1690776D003D8C9F /* column2.png in Resources */,
+				960C0A6D1690776D003D8C9F /* column2@2x.png in Resources */,
+				960C0A6E1690776D003D8C9F /* column3.png in Resources */,
+				960C0A6F1690776D003D8C9F /* column3@2x.png in Resources */,
+				960C0A701690776D003D8C9F /* payment confirm.png in Resources */,
+				960C0A711690776D003D8C9F /* payment confirm@2x.png in Resources */,
+				960C0A721690776D003D8C9F /* payment function-bg.png in Resources */,
+				960C0A731690776D003D8C9F /* payment function-bg@2x.png in Resources */,
+				960C0A741690776D003D8C9F /* process bar3.png in Resources */,
+				960C0A751690776D003D8C9F /* process bar3@2x.png in Resources */,
+				960C0A761690776D003D8C9F /* secure icon.png in Resources */,
+				960C0A771690776D003D8C9F /* secure icon@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5987,6 +6052,7 @@
 				96DD61D8168FDDF500FC8A27 /* CheckOutDetailOneViewController.m in Sources */,
 				96DD61EF169001AD00FC8A27 /* CheckOutDetailTwoViewController.m in Sources */,
 				96DD6216169023F700FC8A27 /* InvoiceDetailCell.m in Sources */,
+				960C0A5C1690728C003D8C9F /* CheckOutPaymentViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

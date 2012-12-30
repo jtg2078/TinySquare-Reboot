@@ -260,6 +260,13 @@ static EggAppManager* singletonManager = nil;
         
         NSLog(@"Member.svc/Update: %@", responseObj);
         
+        NSNumber *saveCardInfo = self.userInfo[@"saveCardInfo"] ? self.userInfo[@"saveCardInfo"] : @(NO);
+        NSString *cardName = self.userInfo[@"cardName"] ? self.userInfo[@"cardName"] : @"";
+        NSString *cardNumber = self.userInfo[@"cardNumber"] ? self.userInfo[@"cardNumber"] : @"";
+        NSString *cardExpireMonth = self.userInfo[@"cardExpireMonth"] ? self.userInfo[@"cardExpireMonth"] : @"";
+        NSString *cardExpireYear = self.userInfo[@"cardExpireYear"] ? self.userInfo[@"cardExpireYear"] : @"";
+        NSString *cardSecurityCode = self.userInfo[@"cardSecurityCode"] ? self.userInfo[@"cardSecurityCode"] : @"";
+        
         [self saveUserInfoAddress:address
                          birthday:birthday
                             email:self.userInfo[@"email"]
@@ -273,7 +280,13 @@ static EggAppManager* singletonManager = nil;
                sameReceiptAddress:sameReceiptAddress
                    receiptAddress:receiptAddress
                          password:self.userInfo[@"password"]
-                       autoSignIn:self.userInfo[@"autoSignIn"]];
+                       autoSignIn:self.userInfo[@"autoSignIn"]
+                     saveCardInfo:saveCardInfo
+                         cardName:cardName
+                       cardNumber:cardNumber
+                  cardExpireMonth:cardExpireMonth
+                   cardExpireYear:cardExpireYear
+                 cardSecurityCode:cardSecurityCode];
         
         if(success)
             success();
@@ -299,6 +312,13 @@ static EggAppManager* singletonManager = nil;
         
         NSLog(@"Member.svc/ChangePw: %@", responseObj);
         
+        NSNumber *saveCardInfo = self.userInfo[@"saveCardInfo"] ? self.userInfo[@"saveCardInfo"] : @(NO);
+        NSString *cardName = self.userInfo[@"cardName"] ? self.userInfo[@"cardName"] : @"";
+        NSString *cardNumber = self.userInfo[@"cardNumber"] ? self.userInfo[@"cardNumber"] : @"";
+        NSString *cardExpireMonth = self.userInfo[@"cardExpireMonth"] ? self.userInfo[@"cardExpireMonth"] : @"";
+        NSString *cardExpireYear = self.userInfo[@"cardExpireYear"] ? self.userInfo[@"cardExpireYear"] : @"";
+        NSString *cardSecurityCode = self.userInfo[@"cardSecurityCode"] ? self.userInfo[@"cardSecurityCode"] : @"";
+        
         [self saveUserInfoAddress:self.userInfo[@"address"]
                          birthday:self.userInfo[@"birthday"]
                             email:self.userInfo[@"email"]
@@ -312,7 +332,13 @@ static EggAppManager* singletonManager = nil;
                sameReceiptAddress:self.userInfo[@"sameReceiptAddress"]
                    receiptAddress:self.userInfo[@"receiptAddress"]
                          password:newPwd
-                       autoSignIn:self.userInfo[@"autoSignIn"]];
+                       autoSignIn:self.userInfo[@"autoSignIn"]
+                     saveCardInfo:saveCardInfo
+                         cardName:cardName
+                       cardNumber:cardNumber
+                  cardExpireMonth:cardExpireMonth
+                   cardExpireYear:cardExpireYear
+                 cardSecurityCode:cardSecurityCode];
         
         if(success)
             success();
@@ -358,6 +384,13 @@ static EggAppManager* singletonManager = nil;
         NSNumber *sameReceiptAddress = self.userInfo[@"sameReceiptAddress"] ? self.userInfo[@"sameReceiptAddress"] : @(NO);
         NSString *receiptAddress = self.userInfo[@"receiptAddress"] ? self.userInfo[@"receiptAddress"] : @"";
         
+        NSNumber *saveCardInfo = self.userInfo[@"saveCardInfo"] ? self.userInfo[@"saveCardInfo"] : @(NO);
+        NSString *cardName = self.userInfo[@"cardName"] ? self.userInfo[@"cardName"] : @"";
+        NSString *cardNumber = self.userInfo[@"cardNumber"] ? self.userInfo[@"cardNumber"] : @"";
+        NSString *cardExpireMonth = self.userInfo[@"cardExpireMonth"] ? self.userInfo[@"cardExpireMonth"] : @"";
+        NSString *cardExpireYear = self.userInfo[@"cardExpireYear"] ? self.userInfo[@"cardExpireYear"] : @"";
+        NSString *cardSecurityCode = self.userInfo[@"cardSecurityCode"] ? self.userInfo[@"cardSecurityCode"] : @"";
+        
         [self saveUserInfoAddress:address
                          birthday:birthday
                             email:email
@@ -371,7 +404,13 @@ static EggAppManager* singletonManager = nil;
                sameReceiptAddress:sameReceiptAddress
                    receiptAddress:receiptAddress
                          password:password
-                       autoSignIn:@(remember)];
+                       autoSignIn:@(remember)
+                     saveCardInfo:saveCardInfo
+                         cardName:cardName
+                       cardNumber:cardNumber
+                  cardExpireMonth:cardExpireMonth
+                   cardExpireYear:cardExpireYear
+                 cardSecurityCode:cardSecurityCode];
         
         self.isSignedIn = YES;
         self.signedInDate = [NSDate date];
@@ -459,6 +498,12 @@ static EggAppManager* singletonManager = nil;
              receiptAddress:(NSString *)receiptAddress
                    password:(NSString *)password
                  autoSignIn:(NSNumber *)autoSignIn
+               saveCardInfo:(NSNumber *)saveCardInfo
+                   cardName:(NSString *)cardName
+                 cardNumber:(NSString *)cardNumber
+            cardExpireMonth:(NSString *)cardExpireMonth
+             cardExpireYear:(NSString *)cardExpireYear
+           cardSecurityCode:(NSString *)cardSecurityCode
 {
     self.userInfo = @{
         @"address": address,
@@ -475,6 +520,12 @@ static EggAppManager* singletonManager = nil;
         @"receiptAddress": receiptAddress,
         @"password": password,
         @"autoSignIn": autoSignIn,
+        @"saveCardInfo": saveCardInfo,
+        @"cardName": cardName,
+        @"cardNumber": cardNumber,
+        @"cardExpireMonth": cardExpireMonth,
+        @"cardExpireYear": cardExpireYear,
+        @"cardSecurityCode": cardSecurityCode,
     };
     
     NSUserDefaults *df = [NSUserDefaults standardUserDefaults];

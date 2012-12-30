@@ -7,6 +7,7 @@
 //
 
 #import "CheckOutDetailTwoViewController.h"
+#import "CheckOutPaymentViewController.h"
 
 #import "InvoiceDetailCell.h"
 
@@ -161,6 +162,8 @@
 
 - (IBAction)nextStepButtonPressed:(id)sender
 {
+    CheckOutPaymentViewController *copvc = [[[CheckOutPaymentViewController alloc] init] autorelease];
+    [self.navigationController pushViewController:copvc animated:YES];
 }
 
 @end
