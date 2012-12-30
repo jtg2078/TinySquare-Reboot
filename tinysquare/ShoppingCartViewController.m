@@ -124,6 +124,7 @@
         int amount = 0;
         NSMutableArray *pidArray = [NSMutableArray array];
         self.countDict = [NSMutableDictionary dictionary];
+        self.stockDict = [NSMutableDictionary dictionary];
         
         for(NSDictionary *p in self.appManager.cartReal[CART_KEY_products])
         {
@@ -131,6 +132,7 @@
             amount += [p[CART_ITEM_KEY_price] intValue];
             [pidArray addObject:p[CART_ITEM_KEY_pid]];
             [self.countDict setObject:p[CART_ITEM_KEY_size] forKey:p[CART_ITEM_KEY_pid]];
+            [self.stockDict setObject:p[CART_ITEM_KEY_available] forKey:p[CART_ITEM_KEY_pid]];
         }
         
         self.totalItemCountLabel.text = [@(itemCount) stringValue];
@@ -333,7 +335,7 @@
     cell.originalPriceLabel.text = p.price.stringValue;
     cell.productNameLabel.text = p.productName;
     cell.countTextField.text = [[self.countDict objectForKey:p.productId] stringValue];
-    //cell.stockCountLabel;
+    cell.stockCountLabel.text = [[self.stockDict objectForKey:p.productId] stringValue];
     //cell.lastUpdatedTimeLabel;
     
     NSString *imageURL = [TmpProduct getFirstProductImageWithSize:TmpProductImageSize100

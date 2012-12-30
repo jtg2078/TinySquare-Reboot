@@ -43,7 +43,7 @@
 					<object class="IBUIImageView" id="359870298">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">274</int>
-						<string key="NSFrameSize">{320, 367}</string>
+						<string key="NSFrame">{{-0.5, 0}, {320, 367}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSNextKeyView" ref="549223612"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
@@ -57,7 +57,7 @@
 					<object class="IBUIImageView" id="549223612">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">274</int>
-						<string key="NSFrame">{{10, 10}, {301, 347}}</string>
+						<string key="NSFrame">{{9.5, 10}, {301, 347}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSNextKeyView" ref="13321849"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
@@ -65,14 +65,15 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<object class="NSCustomResource" key="IBUIImage">
 							<string key="NSClassName">NSImage</string>
-							<string key="NSResourceName">history - function-bg.png</string>
+							<string key="NSResourceName">shopping cart - function-bg.png</string>
 						</object>
 					</object>
 					<object class="IBUITableView" id="13321849">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">274</int>
-						<string key="NSFrame">{{10, 10}, {301, 347}}</string>
+						<string key="NSFrame">{{9.5, 10}, {301, 347}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
+						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<object class="NSColor" key="IBUIBackgroundColor" id="159890489">
 							<int key="NSColorSpace">3</int>
@@ -619,6 +620,7 @@
 								<int key="NSvFlags">292</int>
 								<string key="NSFrame">{{188, 3}, {23, 15}}</string>
 								<reference key="NSSuperview" ref="183633597"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:9</string>
 								<bool key="IBUIOpaque">NO</bool>
 								<bool key="IBUIClipsSubviews">YES</bool>
@@ -697,6 +699,7 @@
 				<int key="NSvFlags">266</int>
 				<string key="NSFrameSize">{320, 44}</string>
 				<reference key="NSSuperview"/>
+				<reference key="NSNextKeyView"/>
 				<string key="NSReuseIdentifierKey">_NS:9</string>
 				<bool key="IBUIOpaque">NO</bool>
 				<bool key="IBUIClearsContextBeforeDrawing">NO</bool>
@@ -853,9 +856,9 @@
 						<int key="objectID">1</int>
 						<reference key="object" ref="191373211"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="359870298"/>
-							<reference ref="549223612"/>
 							<reference ref="13321849"/>
+							<reference ref="549223612"/>
+							<reference ref="359870298"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -1140,8 +1143,8 @@
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="buy.png">{66, 52}</string>
 			<string key="common-bg-606.png">{320, 416}</string>
-			<string key="history - function-bg.png">{16, 16}</string>
 			<string key="process bar.png">{295, 23}</string>
+			<string key="shopping cart - function-bg.png">{301, 348}</string>
 		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">1930</string>
 	</data>

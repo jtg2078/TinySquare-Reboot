@@ -34,5 +34,6 @@
 
 @property (retain, nonatomic) NSArray *productArray;
 @property (retain, nonatomic) NSMutableDictionary *countDict;
+@property (retain, nonatomic) NSMutableDictionary *stockDict;
 
 @end

@@ -7,6 +7,8 @@
 //
 
 #import "CheckOutDetailOneViewController.h"
+#import "CheckOutDetailTwoViewController.h"
+
 #import "IIViewDeckController.h"
 #import "UINavigationController+Customize.h"
 #import "SVProgressHUD.h"
@@ -475,7 +477,18 @@
     }
     
     self.nextStepButton.enabled = NO;
-    [SVProgressHUD showSuccessWithStatus:@"passed!"];
+    
+    CheckOutDetailTwoViewController *codtvc = [[[CheckOutDetailTwoViewController alloc] init] autorelease];
+    codtvc.recipientName = self.nameTextField.text;
+    codtvc.address = self.addressTextField.text;
+    codtvc.phone = self.phoneTextField.text;
+    codtvc.deliverTime = self.deliverTimeTextField.text;
+    codtvc.note = self.noteTextField.text;
+    codtvc.receiptName = self.receiptNameTextField.text;
+    codtvc.receiptAddress = self.receiptAddressTextField.text;
+    
+    [self.navigationController pushViewController:codtvc animated:YES];
+    
     self.nextStepButton.enabled = YES;
 }
 
