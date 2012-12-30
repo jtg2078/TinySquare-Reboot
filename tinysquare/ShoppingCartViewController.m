@@ -7,9 +7,11 @@
 //
 
 #import "ShoppingCartViewController.h"
+#import "CheckOutDetailOneViewController.h"
 #import "ShoppingCartCell.h"
 
 #import "SVProgressHUD.h"
+#import "UINavigationController+Customize.h"
 #import "UIImageView+AFNetworking.h"
 
 #import "TmpProduct.h"
@@ -352,7 +354,13 @@
 
 - (IBAction)buyButtonPressed:(id)sender
 {
-    [SVProgressHUD showErrorWithStatus:@"還沒做"];
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    
+    CheckOutDetailOneViewController *codovc = [[[CheckOutDetailOneViewController alloc] init] autorelease];
+    UINavigationController *nav = [[[UINavigationController alloc] initWithRootViewController:codovc] autorelease];
+    [nav setUpCustomizeAppearence];
+    
+    [appDelegate presentModalViewController:nav animated:YES];
 }
 
 - (IBAction)closeKeyboardButtonPressed:(id)sender

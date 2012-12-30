@@ -92,6 +92,7 @@
                      success:(void (^)(int code, NSString *msg))success
                      failure:(void (^)(NSString *errorMessage, NSError *error))failure;
 
+// not used for now
 - (void)processTempCart:(void (^)())success
               needLogin:(void (^)())login
                 failure:(void (^)(NSString *errorMessage, NSError *error))failure;
@@ -109,5 +110,8 @@
 
 - (void)getAllShoppingCarts:(void (^)(int code, NSString *msg))success
                     failure:(void (^)(NSString *errorMessage, NSError *error))failure;
+
+-(void)checkShoppingCart:(void (^)(int code, NSString *msg))success
+                 failure:(void (^)(NSString *errorMessage, NSError *error))failure;
 
 @end

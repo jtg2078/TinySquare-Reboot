@@ -1,21 +1,21 @@
 //
-//  EditMemeberViewController.m
-//  asoapp
+//  CheckOutDetailOneViewController.m
+//  TinySquare
 //
-//  Created by jason on 12/20/12.
+//  Created by jason on 12/30/12.
 //
 //
 
-#import "EditMemeberViewController.h"
+#import "CheckOutDetailOneViewController.h"
 #import "IIViewDeckController.h"
 #import "UINavigationController+Customize.h"
 #import "SVProgressHUD.h"
 
-@interface EditMemeberViewController ()
+@interface CheckOutDetailOneViewController ()
 
 @end
 
-@implementation EditMemeberViewController
+@implementation CheckOutDetailOneViewController
 
 #pragma mark - define
 
@@ -38,28 +38,26 @@
 
 - (void)dealloc
 {
-    [_myScrollView release];
-    [_myContentView release];
-    [_memberNameLabel release];
     [_nameTextField release];
     [_addressTextField release];
     [_phoneTextField release];
-    [_birthdayTextField release];
-    [_genderTextField release];
-    [_receiptButton release];
-    [_buyerNameTextField release];
+    [_deliverTimeTextField release];
+    [_noteTextField release];
+    [_emailTextField release];
+    [_useReceiptButton release];
+    [_receiptNameTextField release];
     [_taxIDTextField release];
-    [_sameButton release];
-    [_receiptAddressTextField release];
-    [_saveChangeButton release];
-    [_birthdayPicker release];
-    [_genderPicker release];
-    [_receiptPicker release];
-    [_samePicker release];
+    [_sameInfoButton release];
+    [_nextButton release];
+    [_myScrollView release];
+    [_myContentView release];
+    [_nextStepButton release];
     [_inputToolbar release];
     [_previousButton release];
-    [_nextButton release];
     [_dismissKeyboardButton release];
+    [_receiptPicker release];
+    [_samePicker release];
+    [_receiptAddressTextField release];
     [super dealloc];
 }
 
@@ -84,13 +82,8 @@
     // -------------------- navigation bar --------------------
     
 	UIButton* backButton = [self.navigationController setUpCustomizeBackButtonWithText:NSLocalizedString(@"返回", nil)];
+    [backButton addTarget:self action:@selector(goBack:) forControlEvents:UIControlEventTouchUpInside];
 	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:backButton] autorelease];
-    
-    UIButton* memberShip2Button = [self.navigationController createNavigationBarButtonWithOutTextandSetIcon:CustomizeButtonIconMembership2
-                                                                                              iconPlacement:CustomizeButtonIconPlacementRight
-                                                                                                     target:self
-                                                                                                     action:@selector(showMemberSidebar:)];
-	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:memberShip2Button] autorelease];
     
     // -------------------- input field related --------------------
     
@@ -117,23 +110,28 @@
       INFO_KEY_VALIDATION_MSG: self.phoneTextField.placeholder,
       } mutableCopy] autorelease],
     [[@{
-      INFO_KEY_CONTROL: self.birthdayTextField,
-      INFO_KEY_OPTIONAL: @NO,
-      INFO_KEY_KEYBOARD: @(INPUT_TYPE_PICKER),
-      INFO_KEY_PICKER: self.birthdayPicker,
-      INFO_KEY_VALIDATION: [[^BOOL(){return self.birthdayTextField.text.length;} copy] autorelease],
-      INFO_KEY_VALIDATION_MSG: self.birthdayTextField.placeholder,
+      INFO_KEY_CONTROL: self.deliverTimeTextField,
+      INFO_KEY_OPTIONAL: @YES,
+      INFO_KEY_KEYBOARD: @(UIKeyboardTypeDefault),
+      INFO_KEY_VALIDATION: [[^BOOL(){return YES;} copy] autorelease],
+      INFO_KEY_VALIDATION_MSG: self.deliverTimeTextField.placeholder,
       } mutableCopy] autorelease],
     [[@{
-      INFO_KEY_CONTROL: self.genderTextField,
-      INFO_KEY_OPTIONAL: @NO,
-      INFO_KEY_KEYBOARD: @(INPUT_TYPE_PICKER),
-      INFO_KEY_PICKER: self.genderPicker,
-      INFO_KEY_VALIDATION: [[^BOOL(){return self.genderTextField.text.length;} copy] autorelease],
-      INFO_KEY_VALIDATION_MSG: self.genderTextField.placeholder,
+      INFO_KEY_CONTROL: self.noteTextField,
+      INFO_KEY_OPTIONAL: @YES,
+      INFO_KEY_KEYBOARD: @(UIKeyboardTypeDefault),
+      INFO_KEY_VALIDATION: [[^BOOL(){return YES;} copy] autorelease],
+      INFO_KEY_VALIDATION_MSG: self.noteTextField.placeholder,
       } mutableCopy] autorelease],
     [[@{
-      INFO_KEY_CONTROL: self.receiptButton,
+      INFO_KEY_CONTROL: self.emailTextField,
+      INFO_KEY_OPTIONAL: @NO,
+      INFO_KEY_KEYBOARD: @(UIKeyboardTypeEmailAddress),
+      INFO_KEY_VALIDATION: [[^BOOL(){return [self.emailTextField.text componentsSeparatedByString:@"@"].count == 2;} copy] autorelease],
+      INFO_KEY_VALIDATION_MSG: self.emailTextField.placeholder,
+      } mutableCopy] autorelease],
+    [[@{
+      INFO_KEY_CONTROL: self.useReceiptButton,
       INFO_KEY_OPTIONAL: @NO,
       INFO_KEY_KEYBOARD: @(INPUT_TYPE_PICKER),
       INFO_KEY_PICKER: self.receiptPicker,
@@ -141,11 +139,11 @@
       INFO_KEY_VALIDATION_MSG: @"",
       } mutableCopy] autorelease],
     [[@{
-      INFO_KEY_CONTROL: self.buyerNameTextField,
+      INFO_KEY_CONTROL: self.receiptNameTextField,
       INFO_KEY_OPTIONAL: @NO,
       INFO_KEY_KEYBOARD: @(UIKeyboardTypeDefault),
-      INFO_KEY_VALIDATION: [[^BOOL(){return self.buyerNameTextField.text.length;} copy] autorelease],
-      INFO_KEY_VALIDATION_MSG: self.buyerNameTextField.placeholder,
+      INFO_KEY_VALIDATION: [[^BOOL(){return self.receiptNameTextField.text.length;} copy] autorelease],
+      INFO_KEY_VALIDATION_MSG: self.receiptNameTextField.placeholder,
       } mutableCopy] autorelease],
     [[@{
       INFO_KEY_CONTROL: self.taxIDTextField,
@@ -155,7 +153,7 @@
       INFO_KEY_VALIDATION_MSG: self.taxIDTextField.placeholder,
       } mutableCopy] autorelease],
     [[@{
-      INFO_KEY_CONTROL: self.sameButton,
+      INFO_KEY_CONTROL: self.sameInfoButton,
       INFO_KEY_OPTIONAL: @NO,
       INFO_KEY_KEYBOARD: @(INPUT_TYPE_PICKER),
       INFO_KEY_PICKER: self.samePicker,
@@ -194,35 +192,7 @@
     }
     
     self.receiptPickerChoices = @[@"是", @"否"];
-    self.genderPickerChoices = @[@"男", @"女", @"保密"];
     self.samePickerChoices = @[@"同", @" 不同"];
-    
-    // config birthday related controls
-    _dateFormatter = [[NSDateFormatter alloc] init];
-    _dateFormatter.dateFormat = @"yyyy/MM/dd";
-    NSDateComponents *comps = [[[NSDateComponents alloc] init] autorelease];
-    [comps setDay:1];
-    [comps setMonth:1];
-    [comps setYear:1970];
-    self.selectedBirthday = [[NSCalendar currentCalendar] dateFromComponents:comps];
-    self.birthdayPicker.date = self.selectedBirthday;
-    self.birthdayPicker.maximumDate = [NSDate date];
-    self.birthdayTextField.text = [self.dateFormatter stringFromDate:self.selectedBirthday];
-    
-    // config gender related controls
-    self.selectedGender = 0;
-    self.genderTextField.text = [self.genderPickerChoices objectAtIndex:self.selectedGender];
-    [self.genderPicker selectRow:self.selectedGender inComponent:0 animated:NO];
-    
-    // config receipt controls
-    self.useReceipt = NO;
-    self.receiptButton.selected = self.useReceipt;
-    [self.receiptPicker selectRow:1 inComponent:0 animated:NO];
-    
-    // config same controls
-    self.isSameAsAddress = NO;
-    self.sameButton.selected = self.isSameAsAddress;
-    [self.samePicker selectRow:1 inComponent:0 animated:NO];
     
     // -------------------- view related --------------------
     
@@ -230,58 +200,64 @@
     self.myScrollView.contentSize = contentSize;
     [self.myScrollView addSubview:self.myContentView];
     
+    self.useReceiptButton.selected = NO;
+    [self.receiptPicker selectRow:1 inComponent:0 animated:NO];
+    
+    self.sameInfoButton.selected = NO;
+    [self.samePicker selectRow:1 inComponent:0 animated:NO];
+    
     // populate the fields
     NSDictionary *info = self.appManager.userInfo;
     if(info)
     {
-        self.memberNameLabel.text = [NSString stringWithFormat:@"%@ 您好", info[@"name"]];
         self.nameTextField.text = info[@"name"];
         self.addressTextField.text = info[@"address"];
         self.phoneTextField.text = info[@"phone"];
+        self.emailTextField.text = info[@"email"];
         
-        self.birthdayTextField.text = info[@"birthday"];
-        if([info[@"gender"] intValue])
-            self.genderTextField.text = [self.genderPickerChoices objectAtIndex: [info[@"gender"] intValue] - 1];
-        self.birthdayPicker.date = [self.dateFormatter dateFromString:info[@"birthday"]];
-        
-        self.receiptButton.selected = [info[@"useReceipt"] boolValue];
-        int selectedRow = self.receiptButton.selected ? 0 : 1;
+        // config receipt controls
+        BOOL useReceipt = [info[@"useReceipt"] boolValue];
+        self.useReceiptButton.selected = useReceipt;
+        int selectedRow = useReceipt ? 0 : 1;
         [self.receiptPicker selectRow:selectedRow inComponent:0 animated:NO];
         
-        self.buyerNameTextField.text = info[@"receiptName"];
+        self.useReceiptButton.selected = [info[@"useReceipt"] boolValue];
+        self.receiptNameTextField.text = info[@"receiptName"];
         self.taxIDTextField.text = info[@"taxID"];
         
-        self.sameButton.selected = [info[@"sameReceiptAddress"] boolValue];
-        selectedRow = self.sameButton.selected ? 0 : 1;
+        // config same controls
+        BOOL isSameAsAddress = [info[@"sameReceiptAddress"] boolValue];
+        self.sameInfoButton.selected = isSameAsAddress;
+        selectedRow = isSameAsAddress ? 0 : 1;
         [self.samePicker selectRow:selectedRow inComponent:0 animated:NO];
+        
+        self.sameInfoButton.selected = [info[@"sameReceiptAddress"] boolValue];
         self.receiptAddressTextField.text = info[@"receiptAddress"];
     }
 }
 
 - (void)viewDidUnload
 {
-    [self setMyScrollView:nil];
-    [self setMyContentView:nil];
-    [self setMemberNameLabel:nil];
     [self setNameTextField:nil];
     [self setAddressTextField:nil];
     [self setPhoneTextField:nil];
-    [self setBirthdayTextField:nil];
-    [self setGenderTextField:nil];
-    [self setReceiptButton:nil];
-    [self setBuyerNameTextField:nil];
+    [self setDeliverTimeTextField:nil];
+    [self setNoteTextField:nil];
+    [self setEmailTextField:nil];
+    [self setUseReceiptButton:nil];
+    [self setReceiptNameTextField:nil];
     [self setTaxIDTextField:nil];
-    [self setSameButton:nil];
-    [self setReceiptAddressTextField:nil];
-    [self setSaveChangeButton:nil];
-    [self setBirthdayPicker:nil];
-    [self setGenderPicker:nil];
-    [self setReceiptPicker:nil];
-    [self setSamePicker:nil];
+    [self setSameInfoButton:nil];
+    [self setNextButton:nil];
+    [self setMyScrollView:nil];
+    [self setMyContentView:nil];
+    [self setNextStepButton:nil];
     [self setInputToolbar:nil];
     [self setPreviousButton:nil];
-    [self setNextButton:nil];
     [self setDismissKeyboardButton:nil];
+    [self setReceiptPicker:nil];
+    [self setSamePicker:nil];
+    [self setReceiptAddressTextField:nil];
     [super viewDidUnload];
 }
 
@@ -347,8 +323,6 @@
 {
     if(pickerView == self.receiptPicker)
         return self.receiptPickerChoices.count;
-    else if (pickerView == self.genderPicker)
-        return self.genderPickerChoices.count;
     else if (pickerView == self.samePicker)
         return self.samePickerChoices.count;
     
@@ -361,8 +335,6 @@
 {
     if(pickerView == self.receiptPicker)
         return [self.receiptPickerChoices objectAtIndex:row];
-    else if (pickerView == self.genderPicker)
-        return [self.genderPickerChoices objectAtIndex:row];
     else if (pickerView == self.samePicker)
         return [self.samePickerChoices objectAtIndex:row];
     
@@ -372,42 +344,19 @@
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component;
 {
     if(pickerView == self.receiptPicker)
-    {
-        if(row == 0)
-            self.useReceipt = YES;
-        else
-            self.useReceipt = NO;
-        
-        self.receiptButton.selected = self.useReceipt;
-    }
-    else if(pickerView == self.genderPicker)
-    {
-        self.selectedGender = row;
-        self.genderTextField.text = [self.genderPickerChoices objectAtIndex:self.selectedGender];
+    {        
+        self.useReceiptButton.selected = row == 0;
     }
     else if(pickerView == self.samePicker)
     {
-        if(row == 0)
-        {
-            self.isSameAsAddress = YES;
-            self.receiptAddressTextField.text = self.addressTextField.text;
-        }
-        else
-            self.isSameAsAddress = NO;
+        self.sameInfoButton.selected = row == 0;
         
-        self.sameButton.selected = self.isSameAsAddress;
+        if(row == 0)
+            self.receiptAddressTextField.text = self.addressTextField.text;
     }
 }
 
 #pragma mark  - UITextFieldDelegate
-
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-{
-    if(textField == self.birthdayTextField || textField == self.genderTextField)
-        return  NO;
-    
-    return YES;
-}
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
@@ -446,27 +395,16 @@
     [self.myScrollView setContentOffset:offset animated:YES];
 }
 
-- (IBAction)receiptButtonPressed:(id)sender
+- (IBAction)useReceiptButtonPressed:(id)sender
 {
-    self.useReceipt = !self.useReceipt;
-    self.receiptButton.selected = self.useReceipt;
+    self.useReceiptButton.selected = !self.useReceiptButton.selected;
 }
 
-- (IBAction)sameButtonPressed:(id)sender
+- (IBAction)sameInfoButtonPressed:(id)sender
 {
-    self.isSameAsAddress = !self.isSameAsAddress;
-    self.sameButton.selected = self.isSameAsAddress;
+    self.sameInfoButton.selected = ! self.sameInfoButton.selected;
     
-    if(self.sameButton.selected)
-        self.receiptAddressTextField.text = self.addressTextField.text;
-    else
-        self.receiptAddressTextField.text = @"";
-}
-
-- (IBAction)birthdayPickerChanged:(id)sender
-{
-    self.selectedBirthday = self.birthdayPicker.date;
-    self.birthdayTextField.text = [self.dateFormatter stringFromDate:self.selectedBirthday];
+    self.receiptAddressTextField.text = self.sameInfoButton.selected ? self.addressTextField.text : @"";
 }
 
 - (IBAction)closeKeyboardButtonPressed:(id)sender
@@ -517,15 +455,7 @@
 
 #pragma mark - user interaction
 
-- (void)showMemberSidebar:(id)sender
-{
-    if([self.viewDeckController isSideClosed:IIViewDeckRightSide])
-        [self.viewDeckController openRightViewAnimated:YES];
-    else
-        [self.viewDeckController closeRightViewAnimated:YES];
-}
-
-- (IBAction)saveChangeButtonPressed:(id)sender
+- (IBAction)nextStepButtonPressed:(id)sender
 {
     [self.view endEditing:YES];
     self.activeControl = nil;
@@ -544,32 +474,14 @@
         }
     }
     
-    self.saveChangeButton.enabled = NO;
-    [SVProgressHUD showWithStatus:@"傳送中"];
-    
-    [self.appManager updateMemeberName:self.nameTextField.text
-                               address:self.addressTextField.text
-                                 phone:self.phoneTextField.text
-                                gender:@(self.selectedGender + 1)
-                              birthday:self.birthdayTextField.text
-                            useReceipt:@(self.receiptButton.selected)
-                           receiptName:self.buyerNameTextField.text
-                                 taxID:self.taxIDTextField.text
-                    sameReceiptAddress:@(self.sameButton.selected)
-                        receiptAddress:self.receiptAddressTextField.text
-                         passwordOrNil:nil success:^{
-        
-        [SVProgressHUD showSuccessWithStatus:@"更新成功"];
-        self.saveChangeButton.enabled = YES;
-                             
-        [self.navigationController popViewControllerAnimated:YES];
-        
-    } failure:^(NSString *errorMessage, NSError *error) {
-        
-        [SVProgressHUD showErrorWithStatus:errorMessage];
-        self.saveChangeButton.enabled = YES;
-        
-    }];
+    self.nextStepButton.enabled = NO;
+    [SVProgressHUD showSuccessWithStatus:@"passed!"];
+    self.nextStepButton.enabled = YES;
+}
+
+- (void)goBack:(id)sender
+{
+    [self dismissModalViewControllerAnimated:YES];
 }
 
 @end

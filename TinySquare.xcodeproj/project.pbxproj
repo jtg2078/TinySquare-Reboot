@@ -464,6 +464,16 @@
 		96DD61CC168EFEB700FC8A27 /* OrderFirstCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 96DD61CB168EFEB700FC8A27 /* OrderFirstCell.xib */; };
 		96DD61CE168EFECD00FC8A27 /* OrderMiddleCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 96DD61CD168EFECD00FC8A27 /* OrderMiddleCell.xib */; };
 		96DD61D0168EFEE300FC8A27 /* OrderLastCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 96DD61CF168EFEE200FC8A27 /* OrderLastCell.xib */; };
+		96DD61D8168FDDF500FC8A27 /* CheckOutDetailOneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96DD61D6168FDDF500FC8A27 /* CheckOutDetailOneViewController.m */; };
+		96DD61D9168FDDF500FC8A27 /* CheckOutDetailOneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 96DD61D7168FDDF500FC8A27 /* CheckOutDetailOneViewController.xib */; };
+		96DD61E4168FDFD900FC8A27 /* checkout one - function-bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 96DD61DC168FDFD900FC8A27 /* checkout one - function-bg.png */; };
+		96DD61E5168FDFD900FC8A27 /* checkout one - function-bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96DD61DD168FDFD900FC8A27 /* checkout one - function-bg@2x.png */; };
+		96DD61E6168FDFD900FC8A27 /* checkout one - next.png in Resources */ = {isa = PBXBuildFile; fileRef = 96DD61DE168FDFD900FC8A27 /* checkout one - next.png */; };
+		96DD61E7168FDFD900FC8A27 /* checkout one - next@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96DD61DF168FDFD900FC8A27 /* checkout one - next@2x.png */; };
+		96DD61E8168FDFD900FC8A27 /* checkout one - write&payment.png in Resources */ = {isa = PBXBuildFile; fileRef = 96DD61E0168FDFD900FC8A27 /* checkout one - write&payment.png */; };
+		96DD61E9168FDFD900FC8A27 /* checkout one - write&payment@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96DD61E1168FDFD900FC8A27 /* checkout one - write&payment@2x.png */; };
+		96DD61EA168FDFD900FC8A27 /* process bar2 .png in Resources */ = {isa = PBXBuildFile; fileRef = 96DD61E2168FDFD900FC8A27 /* process bar2 .png */; };
+		96DD61EB168FDFD900FC8A27 /* process bar2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96DD61E3168FDFD900FC8A27 /* process bar2@2x.png */; };
 		96E10498168357450021405D /* buy-step1.png in Resources */ = {isa = PBXBuildFile; fileRef = 96E1048E168357450021405D /* buy-step1.png */; };
 		96E10499168357450021405D /* buy-step1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96E1048F168357450021405D /* buy-step1@2x.png */; };
 		96E1049A168357450021405D /* buy-step2.png in Resources */ = {isa = PBXBuildFile; fileRef = 96E10490168357450021405D /* buy-step2.png */; };
@@ -1532,6 +1542,17 @@
 		96DD61CB168EFEB700FC8A27 /* OrderFirstCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderFirstCell.xib; sourceTree = "<group>"; };
 		96DD61CD168EFECD00FC8A27 /* OrderMiddleCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderMiddleCell.xib; sourceTree = "<group>"; };
 		96DD61CF168EFEE200FC8A27 /* OrderLastCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderLastCell.xib; sourceTree = "<group>"; };
+		96DD61D5168FDDF500FC8A27 /* CheckOutDetailOneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckOutDetailOneViewController.h; sourceTree = "<group>"; };
+		96DD61D6168FDDF500FC8A27 /* CheckOutDetailOneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckOutDetailOneViewController.m; sourceTree = "<group>"; };
+		96DD61D7168FDDF500FC8A27 /* CheckOutDetailOneViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CheckOutDetailOneViewController.xib; sourceTree = "<group>"; };
+		96DD61DC168FDFD900FC8A27 /* checkout one - function-bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkout one - function-bg.png"; sourceTree = "<group>"; };
+		96DD61DD168FDFD900FC8A27 /* checkout one - function-bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkout one - function-bg@2x.png"; sourceTree = "<group>"; };
+		96DD61DE168FDFD900FC8A27 /* checkout one - next.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkout one - next.png"; sourceTree = "<group>"; };
+		96DD61DF168FDFD900FC8A27 /* checkout one - next@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkout one - next@2x.png"; sourceTree = "<group>"; };
+		96DD61E0168FDFD900FC8A27 /* checkout one - write&payment.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkout one - write&payment.png"; sourceTree = "<group>"; };
+		96DD61E1168FDFD900FC8A27 /* checkout one - write&payment@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkout one - write&payment@2x.png"; sourceTree = "<group>"; };
+		96DD61E2168FDFD900FC8A27 /* process bar2 .png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "process bar2 .png"; sourceTree = "<group>"; };
+		96DD61E3168FDFD900FC8A27 /* process bar2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "process bar2@2x.png"; sourceTree = "<group>"; };
 		96E1048E168357450021405D /* buy-step1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buy-step1.png"; sourceTree = "<group>"; };
 		96E1048F168357450021405D /* buy-step1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buy-step1@2x.png"; sourceTree = "<group>"; };
 		96E10490168357450021405D /* buy-step2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buy-step2.png"; sourceTree = "<group>"; };
@@ -3145,6 +3166,21 @@
 			path = "order history";
 			sourceTree = "<group>";
 		};
+		96DD61DB168FDFD900FC8A27 /* check out detail one */ = {
+			isa = PBXGroup;
+			children = (
+				96DD61DC168FDFD900FC8A27 /* checkout one - function-bg.png */,
+				96DD61DD168FDFD900FC8A27 /* checkout one - function-bg@2x.png */,
+				96DD61DE168FDFD900FC8A27 /* checkout one - next.png */,
+				96DD61DF168FDFD900FC8A27 /* checkout one - next@2x.png */,
+				96DD61E0168FDFD900FC8A27 /* checkout one - write&payment.png */,
+				96DD61E1168FDFD900FC8A27 /* checkout one - write&payment@2x.png */,
+				96DD61E2168FDFD900FC8A27 /* process bar2 .png */,
+				96DD61E3168FDFD900FC8A27 /* process bar2@2x.png */,
+			);
+			path = "check out detail one";
+			sourceTree = "<group>";
+		};
 		96E1048D168357450021405D /* misc */ = {
 			isa = PBXGroup;
 			children = (
@@ -4330,6 +4366,7 @@
 		96F9CEAB1683547900FC8EC3 /* Asset */ = {
 			isa = PBXGroup;
 			children = (
+				96DD61DB168FDFD900FC8A27 /* check out detail one */,
 				96DD6183168EDAEB00FC8A27 /* order history */,
 				96CF2FE8168CB369002BA8E5 /* shopping cart */,
 				964A2B0E168C558500DBC42F /* product details */,
@@ -4776,6 +4813,9 @@
 				96CF3039168D43A9002BA8E5 /* ShoppingCartCell.h */,
 				96CF303A168D43A9002BA8E5 /* ShoppingCartCell.m */,
 				96CF3041168D4A90002BA8E5 /* ShoppingCartCell.xib */,
+				96DD61D5168FDDF500FC8A27 /* CheckOutDetailOneViewController.h */,
+				96DD61D6168FDDF500FC8A27 /* CheckOutDetailOneViewController.m */,
+				96DD61D7168FDDF500FC8A27 /* CheckOutDetailOneViewController.xib */,
 			);
 			name = "my bookmarks";
 			sourceTree = "<group>";
@@ -5555,6 +5595,15 @@
 				96DD61CC168EFEB700FC8A27 /* OrderFirstCell.xib in Resources */,
 				96DD61CE168EFECD00FC8A27 /* OrderMiddleCell.xib in Resources */,
 				96DD61D0168EFEE300FC8A27 /* OrderLastCell.xib in Resources */,
+				96DD61D9168FDDF500FC8A27 /* CheckOutDetailOneViewController.xib in Resources */,
+				96DD61E4168FDFD900FC8A27 /* checkout one - function-bg.png in Resources */,
+				96DD61E5168FDFD900FC8A27 /* checkout one - function-bg@2x.png in Resources */,
+				96DD61E6168FDFD900FC8A27 /* checkout one - next.png in Resources */,
+				96DD61E7168FDFD900FC8A27 /* checkout one - next@2x.png in Resources */,
+				96DD61E8168FDFD900FC8A27 /* checkout one - write&payment.png in Resources */,
+				96DD61E9168FDFD900FC8A27 /* checkout one - write&payment@2x.png in Resources */,
+				96DD61EA168FDFD900FC8A27 /* process bar2 .png in Resources */,
+				96DD61EB168FDFD900FC8A27 /* process bar2@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5845,6 +5894,7 @@
 				96DD61C0168EEAD000FC8A27 /* OrderLastCell.m in Sources */,
 				96DD61C3168EED2300FC8A27 /* OrderMiddleCell.m in Sources */,
 				96DD61C7168EEF0800FC8A27 /* OrderHistoryViewController.m in Sources */,
+				96DD61D8168FDDF500FC8A27 /* CheckOutDetailOneViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -61,3 +61,9 @@ extern int const CART_STATUS_proceeding;
 extern int const CART_STATUS_in_transaction;
 extern int const CART_STATUS_success;
 extern int const CART_STATUS_failure;
+
+extern int const CART_CHECK_order_not_found;
+extern int const CART_CHECK_not_logged_in;
+extern int const CART_CHECK_unknown;
+extern int const CART_CHECK_ok;
+

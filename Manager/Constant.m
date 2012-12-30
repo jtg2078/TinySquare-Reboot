@@ -62,3 +62,7 @@ int const CART_STATUS_in_transaction = 3;
 int const CART_STATUS_success = 4;
 int const CART_STATUS_failure = 5;
 
+int const CART_CHECK_order_not_found = -2;
+int const CART_CHECK_not_logged_in = -1;
+int const CART_CHECK_unknown = 0;
+int const CART_CHECK_ok = 1;

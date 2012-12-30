@@ -893,6 +893,44 @@ static EggAppManager* singletonManager = nil;
     }];
 }
 
+-(void)checkShoppingCart:(void (^)(int code, NSString *msg))success
+                 failure:(void (^)(NSString *errorMessage, NSError *error))failure
+{
+    NSDictionary *params = @{
+        @"orderid": self.cartReal[CART_KEY_orderid],
+    };
+    
+    [self.httpClient postPath:@"Buy.svc/CartCheck" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSError *error = nil;
+        NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:&error];
+        
+        NSLog(@"Buy.svc/CartCheck: %@", JSON);
+        
+        int code = [JSON[JSON_KEY_code] intValue];
+        NSString *msg = [JSON[JSON_KEY_msg] isKindOfClass:[NSNull class]] ? @"" : JSON[JSON_KEY_msg];
+        
+        if(code == CART_CHECK_ok)
+        {
+            self.cartReal = [JSON[JSON_KEY_rsp] objectFromJSONString];
+            
+            if(success)
+                success(code, msg);
+        }
+        else
+        {
+            if(failure)
+                failure(msg, nil);
+        }
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        
+        if(failure)
+            failure(@"咬貨失敗", error);
+        
+    }];
+}
+
 #pragma mark - misc
 
 - (NSString *)prettyPrintDict:(NSDictionary *)dict
