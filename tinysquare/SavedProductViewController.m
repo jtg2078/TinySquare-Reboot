@@ -17,7 +17,8 @@
 #import "IIViewDeckController.h"
 #import "SVProgressHUD.h"
 
-
+#import "ProductDetailModelManager.h"
+#import "DetailViewController.h"
 
 @interface SavedProductViewController()
 - (void)beginEditBookmarks;
@@ -107,6 +108,10 @@
 - (void)viewDidLoad 
 {
 	[super viewDidLoad];
+    
+    // setup notification center
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserver:self selector:@selector(goToProduct:) name:@"gotoShoppingCartItemDetail" object:nil];
     
     // setup navigation bar buttons
     [self setupNavigationBarButtons];
@@ -366,6 +371,23 @@
         [vdc openRightViewAnimated:YES];
     else
         [vdc closeRightViewAnimated:YES];
+}
+
+- (void)goToProduct:(NSNotification *)notif
+{
+    int pid = [[notif.userInfo objectForKey:@"pid"] intValue];
+    ProductDetailModelManager *pdmm = [[ProductDetailModelManager alloc] initWithItemId:pid];
+    
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    
+    DetailViewController *dvc = [[DetailViewController alloc] init];
+    pdmm.delegate = dvc;
+    pdmm.managedObjectContext = appDelegate.managedObjectContext;
+    dvc.modelManager = pdmm;
+    [pdmm release];
+	
+    [self.navigationController pushViewController:dvc animated:YES];
+	[dvc release];
 }
 
 @end

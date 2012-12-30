@@ -245,6 +245,9 @@
             
             [self bringActiveControlIntoView];
             
+            if(index - 1 == 0)
+                self.previousButton.enabled = NO;
+            
             break;
         }
         index++;
@@ -263,6 +266,9 @@
             [self.activeControl becomeFirstResponder];
             
             [self bringActiveControlIntoView];
+            
+            if(index + 1 == self.inputInfo.count - 1)
+                self.nextButton.enabled = NO;
             
             break;
         }

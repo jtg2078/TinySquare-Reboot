@@ -77,7 +77,6 @@
     // -------------------- navigation bar --------------------
     
 	UIButton* backButton = [self.navigationController setUpCustomizeBackButtonWithText:NSLocalizedString(@"返回", nil)];
-    [backButton addTarget:self action:@selector(goBack:) forControlEvents:UIControlEventTouchUpInside];
 	self.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] initWithCustomView:backButton] autorelease];
     
     // -------------------- input field related --------------------
@@ -350,6 +349,9 @@
             
             [self bringActiveControlIntoView];
             
+            if(index - 1 == 0)
+                self.previousButton.enabled = NO;
+            
             break;
         }
         index++;
@@ -368,6 +370,9 @@
             [self.activeControl becomeFirstResponder];
             
             [self bringActiveControlIntoView];
+            
+            if(index + 1 == self.inputInfo.count - 1)
+                self.nextButton.enabled = NO;
             
             break;
         }
@@ -396,11 +401,40 @@
         }
     }
     
+    [SVProgressHUD showWithStatus:@"處理中"];
     self.submitPaymentButton.enabled = NO;
     
-    [SVProgressHUD showSuccessWithStatus:@"submitted"];
-    
-    self.submitPaymentButton.enabled = YES;
+    [self.appManager submitPaymentForOrder:self.appManager.cartReal[CART_KEY_orderid]
+                                     total:self.appManager.cartReal[CART_KEY_total]
+                                      name:self.cardHolderNameTextField.text
+                                   address:self.address
+                                     phone:self.phone
+                                  shiptime:self.deliverTime
+                                      note:self.note
+                                     email:self.appManager.userInfo[@"email"]
+                                    rtitle:self.receiptName
+                                   rnumber:self.taxID
+                                  raddress:self.receiptAddress
+                              saveCardInfo:self.storeCardInfoButton.selected
+                                    cardno:self.cardNumberTextField.text
+                                     cardm:self.expireMonthTextField.text
+                                     cardy:self.expireYearTextField.text
+                                      cvv2:self.securityCodeTextField.text
+                                   success:^(int code, NSString *msg) {
+                                       
+                                       [SVProgressHUD showSuccessWithStatus:msg];
+                                       self.submitPaymentButton.enabled = YES;
+                                       
+                                       [self dismissModalViewControllerAnimated:YES];
+                                       
+                                   } failure:^(NSString *errorMessage, NSError *error) {
+                                       
+                                       [SVProgressHUD showErrorWithStatus:errorMessage];
+                                       self.submitPaymentButton.enabled = YES;
+                                       
+                                       [self dismissModalViewControllerAnimated:YES];
+                                       
+                                   }];
 }
 
 @end

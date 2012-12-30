@@ -350,6 +350,11 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    TmpProduct *p = (TmpProduct *)[self.productArray objectAtIndex:indexPath.row];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"gotoShoppingCartItemDetail"
+                                                        object:self
+                                                      userInfo:@{@"pid":p.productId}];
 }
 
 #pragma mark - user interaction
@@ -358,11 +363,25 @@
 {
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     
-    CheckOutDetailOneViewController *codovc = [[[CheckOutDetailOneViewController alloc] init] autorelease];
-    UINavigationController *nav = [[[UINavigationController alloc] initWithRootViewController:codovc] autorelease];
-    [nav setUpCustomizeAppearence];
-    
-    [appDelegate presentModalViewController:nav animated:YES];
+    [SVProgressHUD showWithStatus:@"確認中"];
+    self.buyButton.enabled = NO;
+    [self.appManager checkShoppingCart:^(int code, NSString *msg) {
+        
+        [SVProgressHUD dismiss];
+        self.buyButton.enabled = YES;
+        
+        CheckOutDetailOneViewController *codovc = [[[CheckOutDetailOneViewController alloc] init] autorelease];
+        UINavigationController *nav = [[[UINavigationController alloc] initWithRootViewController:codovc] autorelease];
+        [nav setUpCustomizeAppearence];
+        
+        [appDelegate presentModalViewController:nav animated:YES];
+        
+    } failure:^(NSString *errorMessage, NSError *error) {
+        
+        [SVProgressHUD showErrorWithStatus:errorMessage];
+        self.buyButton.enabled = YES;
+        
+    }];
 }
 
 - (IBAction)closeKeyboardButtonPressed:(id)sender

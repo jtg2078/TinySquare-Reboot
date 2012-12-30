@@ -111,7 +111,26 @@
 - (void)getAllShoppingCarts:(void (^)(int code, NSString *msg))success
                     failure:(void (^)(NSString *errorMessage, NSError *error))failure;
 
--(void)checkShoppingCart:(void (^)(int code, NSString *msg))success
-                 failure:(void (^)(NSString *errorMessage, NSError *error))failure;
+- (void)checkShoppingCart:(void (^)(int code, NSString *msg))success
+                  failure:(void (^)(NSString *errorMessage, NSError *error))failure;
+
+- (void)submitPaymentForOrder:(NSString *)orderID
+                        total:(NSString *)total
+                         name:(NSString *)name
+                      address:(NSString *)address
+                        phone:(NSString *)phone
+                     shiptime:(NSString *)shiptime
+                         note:(NSString *)note
+                        email:(NSString *)email
+                       rtitle:(NSString *)rtitle
+                      rnumber:(NSString *)rnumber
+                     raddress:(NSString *)raddress
+                 saveCardInfo:(BOOL)saveCardInfo
+                       cardno:(NSString *)cardno
+                        cardm:(NSString *)cardm
+                        cardy:(NSString *)cardy
+                         cvv2:(NSString *)cvv2
+                      success:(void (^)(int code, NSString *msg))success
+                      failure:(void (^)(NSString *errorMessage, NSError *error))failure;
 
 @end

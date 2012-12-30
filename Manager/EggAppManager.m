@@ -506,26 +506,26 @@ static EggAppManager* singletonManager = nil;
            cardSecurityCode:(NSString *)cardSecurityCode
 {
     self.userInfo = @{
-        @"address": address,
-        @"birthday": birthday,
-        @"email": email,
-        @"fcid": fcid,
-        @"gender": gender,
-        @"name": name,
-        @"phone": phone,
-        @"useReceipt": useReceipt,
-        @"receiptName": receiptName,
-        @"taxID": taxID,
-        @"sameReceiptAddress": sameReceiptAddress,
-        @"receiptAddress": receiptAddress,
-        @"password": password,
-        @"autoSignIn": autoSignIn,
-        @"saveCardInfo": saveCardInfo,
-        @"cardName": cardName,
-        @"cardNumber": cardNumber,
-        @"cardExpireMonth": cardExpireMonth,
-        @"cardExpireYear": cardExpireYear,
-        @"cardSecurityCode": cardSecurityCode,
+        @"address": address ? address : @"",
+        @"birthday": birthday ? birthday : @"",
+        @"email": email ? email : @"",
+        @"fcid": fcid ? fcid : @(0),
+        @"gender": gender ? gender : @(0),
+        @"name": name ? name : @"",
+        @"phone": phone ? phone : @"",
+        @"useReceipt": useReceipt ? useReceipt : @(NO),
+        @"receiptName": receiptName ? receiptName : @"",
+        @"taxID": taxID ? taxID : @"",
+        @"sameReceiptAddress": sameReceiptAddress ? sameReceiptAddress : @(NO),
+        @"receiptAddress": receiptAddress ? receiptAddress : @"",
+        @"password": password ? password : @"",
+        @"autoSignIn": autoSignIn ? autoSignIn : @(NO),
+        @"saveCardInfo": saveCardInfo ? saveCardInfo : @(NO),
+        @"cardName": cardName ? cardName : @"",
+        @"cardNumber": cardNumber ? cardNumber : @"",
+        @"cardExpireMonth": cardExpireMonth ? cardExpireMonth : @"",
+        @"cardExpireYear": cardExpireYear ? cardExpireYear : @"",
+        @"cardSecurityCode": cardSecurityCode ? cardSecurityCode : @"",
     };
     
     NSUserDefaults *df = [NSUserDefaults standardUserDefaults];
@@ -944,8 +944,8 @@ static EggAppManager* singletonManager = nil;
     }];
 }
 
--(void)checkShoppingCart:(void (^)(int code, NSString *msg))success
-                 failure:(void (^)(NSString *errorMessage, NSError *error))failure
+- (void)checkShoppingCart:(void (^)(int code, NSString *msg))success
+                  failure:(void (^)(NSString *errorMessage, NSError *error))failure
 {
     NSDictionary *params = @{
         @"orderid": self.cartReal[CART_KEY_orderid],
@@ -978,6 +978,105 @@ static EggAppManager* singletonManager = nil;
         
         if(failure)
             failure(@"咬貨失敗", error);
+        
+    }];
+}
+
+- (void)submitPaymentForOrder:(NSString *)orderID
+                        total:(NSString *)total
+                         name:(NSString *)name
+                      address:(NSString *)address
+                        phone:(NSString *)phone
+                     shiptime:(NSString *)shiptime
+                         note:(NSString *)note
+                        email:(NSString *)email
+                       rtitle:(NSString *)rtitle
+                      rnumber:(NSString *)rnumber
+                     raddress:(NSString *)raddress
+                 saveCardInfo:(BOOL)saveCardInfo
+                       cardno:(NSString *)cardno
+                        cardm:(NSString *)cardm
+                        cardy:(NSString *)cardy
+                         cvv2:(NSString *)cvv2
+                      success:(void (^)(int code, NSString *msg))success
+                      failure:(void (^)(NSString *errorMessage, NSError *error))failure
+{
+    NSDictionary *params = @{
+        @"orderid": orderID,
+        @"total": total,
+        @"name": name,
+        @"address": address,
+        @"phone": phone,
+        @"shiptime": shiptime,
+        @"note": note,
+        @"email": email,
+        @"rtitle": rtitle,
+        @"rnumber": rnumber,
+        @"raddress": raddress,
+        @"cardno": cardno,
+        @"cardm": cardm,
+        @"cardy": cardy,
+        @"cvv2": cvv2,
+    };
+    
+    if(saveCardInfo)
+    {
+        [self saveUserInfoAddress:self.userInfo[@"address"]
+                         birthday:self.userInfo[@"birthday"]
+                            email:self.userInfo[@"email"]
+                             fcid:self.userInfo[@"fcid"]
+                           gender:self.userInfo[@"gender"]
+                             name:self.userInfo[@"name"]
+                            phone:self.userInfo[@"phone"]
+                       useReceipt:self.userInfo[@"useReceipt"]
+                      receiptName:self.userInfo[@"receiptName"]
+                            taxID:self.userInfo[@"taxID"]
+               sameReceiptAddress:self.userInfo[@"sameReceiptAddress"]
+                   receiptAddress:self.userInfo[@"receiptAddress"]
+                         password:self.userInfo[@"password"]
+                       autoSignIn:self.userInfo[@"autoSignIn"]
+                     saveCardInfo:@(saveCardInfo)
+                         cardName:name
+                       cardNumber:cardno
+                  cardExpireMonth:cardm
+                   cardExpireYear:cardy
+                 cardSecurityCode:cvv2];
+    }
+    
+    BOOL debug = NO;
+    if(debug)
+    {
+        if(success)
+            success(0, [params description]);
+        
+        return;
+    }
+    
+    [self.httpClient postPath:@"Buy.svc/CartCheckOut" parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSError *error = nil;
+        NSDictionary *JSON = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:&error];
+        
+        NSLog(@"Buy.svc/CartCheckOut: %@", JSON);
+        
+        int code = [JSON[JSON_KEY_code] intValue];
+        NSString *msg = [JSON[JSON_KEY_msg] isKindOfClass:[NSNull class]] ? @"" : JSON[JSON_KEY_msg];
+        
+        if(code == CHECK_OUT_success)
+        {
+            if(success)
+                success(code, @"訂單結帳成功");
+        }
+        else
+        {
+            if(failure)
+                failure(msg, nil);
+        }
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        
+        if(failure)
+            failure(@"訂單結帳失敗", error);
         
     }];
 }

@@ -430,6 +430,9 @@
             
             [self bringActiveControlIntoView];
             
+            if(index - 1 == 0)
+                self.previousButton.enabled = NO;
+            
             break;
         }
         index++;
@@ -448,6 +451,9 @@
             [self.activeControl becomeFirstResponder];
             
             [self bringActiveControlIntoView];
+            
+            if(index + 1 == self.inputInfo.count - 1)
+                self.nextButton.enabled = NO;
             
             break;
         }
@@ -486,6 +492,7 @@
     codtvc.note = self.noteTextField.text;
     codtvc.receiptName = self.receiptNameTextField.text;
     codtvc.receiptAddress = self.receiptAddressTextField.text;
+    codtvc.taxID = self.taxIDTextField.text;
     
     [self.navigationController pushViewController:codtvc animated:YES];
     

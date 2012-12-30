@@ -67,3 +67,17 @@ extern int const CART_CHECK_not_logged_in;
 extern int const CART_CHECK_unknown;
 extern int const CART_CHECK_ok;
 
+extern int const CHECK_OUT_unknown_error1;
+extern int const CHECK_OUT_unknown_error2;
+extern int const CHECK_OUT_unknown_error3;
+extern int const CHECK_OUT_invalid_total;
+extern int const CHECK_OUT_failed_transaction;
+extern int const CHECK_OUT_completed_transaction;
+extern int const CHECK_OUT_already_in_transaction;
+extern int const CHECK_OUT_contained_out_of_stock;
+extern int const CHECK_OUT_order_id_not_found;
+extern int const CHECK_OUT_not_logged_in;
+extern int const CHECK_OUT_unknown;
+extern int const CHECK_OUT_success;
+extern int const CHECK_OUT_failure;
+

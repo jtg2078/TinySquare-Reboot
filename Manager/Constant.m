@@ -66,3 +66,18 @@ int const CART_CHECK_order_not_found = -2;
 int const CART_CHECK_not_logged_in = -1;
 int const CART_CHECK_unknown = 0;
 int const CART_CHECK_ok = 1;
+
+int const CHECK_OUT_unknown_error1 = -10;
+int const CHECK_OUT_unknown_error2 = -9;
+int const CHECK_OUT_unknown_error3 = -8;
+int const CHECK_OUT_invalid_total = -7;
+int const CHECK_OUT_failed_transaction = -6;
+int const CHECK_OUT_completed_transaction = -5;
+int const CHECK_OUT_already_in_transaction = -4;
+int const CHECK_OUT_contained_out_of_stock = -3;
+int const CHECK_OUT_order_id_not_found = -2;
+int const CHECK_OUT_not_logged_in = -1;
+int const CHECK_OUT_unknown = 0;
+int const CHECK_OUT_success = 1;
+int const CHECK_OUT_failure = 2;
+

@@ -111,6 +111,7 @@
     self.shippingLabel.text = [self.appManager.cartReal[CART_KEY_shippingfees] stringValue];
     self.receiptNameLabel.text = self.receiptName;
     self.receiptAddressLabel.text = self.receiptAddress;
+    self.taxIDLabel.text = self.taxID;
 }
 
 - (void)viewDidUnload
@@ -163,6 +164,14 @@
 - (IBAction)nextStepButtonPressed:(id)sender
 {
     CheckOutPaymentViewController *copvc = [[[CheckOutPaymentViewController alloc] init] autorelease];
+    copvc.recipientName = self.recipientName;
+    copvc.address = self.address;
+    copvc.phone = self.phone;
+    copvc.deliverTime = self.deliverTime;
+    copvc.note = self.note;
+    copvc.receiptName = self.receiptName;
+    copvc.receiptAddress = self.receiptAddress;
+    copvc.taxID = self.taxID;
     [self.navigationController pushViewController:copvc animated:YES];
 }
 

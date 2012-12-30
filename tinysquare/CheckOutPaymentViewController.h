@@ -15,6 +15,16 @@
     
 }
 
+// data
+@property (retain, nonatomic) NSString *recipientName;
+@property (retain, nonatomic) NSString *address;
+@property (retain, nonatomic) NSString *phone;
+@property (retain, nonatomic) NSString *deliverTime;
+@property (retain, nonatomic) NSString *note;
+@property (retain, nonatomic) NSString *taxID;
+@property (retain, nonatomic) NSString *receiptName;
+@property (retain, nonatomic) NSString *receiptAddress;
+
 @property (retain, nonatomic) IBOutlet UIScrollView *myScrollView;
 @property (retain, nonatomic) IBOutlet UIView *myContentView;
 

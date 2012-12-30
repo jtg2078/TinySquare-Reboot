@@ -20,6 +20,7 @@
 @property (retain, nonatomic) NSString *phone;
 @property (retain, nonatomic) NSString *deliverTime;
 @property (retain, nonatomic) NSString *note;
+@property (retain, nonatomic) NSString *taxID;
 @property (retain, nonatomic) NSString *receiptName;
 @property (retain, nonatomic) NSString *receiptAddress;
 
