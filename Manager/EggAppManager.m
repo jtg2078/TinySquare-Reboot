@@ -1019,29 +1019,26 @@ static EggAppManager* singletonManager = nil;
         @"cvv2": cvv2,
     };
     
-    if(saveCardInfo)
-    {
-        [self saveUserInfoAddress:self.userInfo[@"address"]
-                         birthday:self.userInfo[@"birthday"]
-                            email:self.userInfo[@"email"]
-                             fcid:self.userInfo[@"fcid"]
-                           gender:self.userInfo[@"gender"]
-                             name:self.userInfo[@"name"]
-                            phone:self.userInfo[@"phone"]
-                       useReceipt:self.userInfo[@"useReceipt"]
-                      receiptName:self.userInfo[@"receiptName"]
-                            taxID:self.userInfo[@"taxID"]
-               sameReceiptAddress:self.userInfo[@"sameReceiptAddress"]
-                   receiptAddress:self.userInfo[@"receiptAddress"]
-                         password:self.userInfo[@"password"]
-                       autoSignIn:self.userInfo[@"autoSignIn"]
-                     saveCardInfo:@(saveCardInfo)
-                         cardName:name
-                       cardNumber:cardno
-                  cardExpireMonth:cardm
-                   cardExpireYear:cardy
-                 cardSecurityCode:cvv2];
-    }
+    [self saveUserInfoAddress:self.userInfo[@"address"]
+                     birthday:self.userInfo[@"birthday"]
+                        email:self.userInfo[@"email"]
+                         fcid:self.userInfo[@"fcid"]
+                       gender:self.userInfo[@"gender"]
+                         name:self.userInfo[@"name"]
+                        phone:self.userInfo[@"phone"]
+                   useReceipt:self.userInfo[@"useReceipt"]
+                  receiptName:self.userInfo[@"receiptName"]
+                        taxID:self.userInfo[@"taxID"]
+           sameReceiptAddress:self.userInfo[@"sameReceiptAddress"]
+               receiptAddress:self.userInfo[@"receiptAddress"]
+                     password:self.userInfo[@"password"]
+                   autoSignIn:self.userInfo[@"autoSignIn"]
+                 saveCardInfo:@(saveCardInfo)
+                     cardName: saveCardInfo ? name : @""
+                   cardNumber: saveCardInfo ? cardno : @""
+              cardExpireMonth: saveCardInfo ? cardm : @""
+               cardExpireYear: saveCardInfo ? cardy : @"" 
+             cardSecurityCode: saveCardInfo ? cvv2 : @""];
     
     BOOL debug = NO;
     if(debug)
