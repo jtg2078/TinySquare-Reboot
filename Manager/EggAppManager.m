@@ -618,6 +618,7 @@ static EggAppManager* singletonManager = nil;
                 failure:(void (^)(NSString *errorMessage, NSError *error))failure
 {
     /*
+     old:
      - get latest cart from server
         - cart existed
             - go over all the items in the cart and compare with the temp cart
@@ -631,97 +632,155 @@ static EggAppManager* singletonManager = nil;
         - cart does not exist
             - create cart with items from temp cart
      - clear items on temp cart
+     
+     new:
+     - 
      */
     
-    [self getLatestShoppingCart:^(int code, NSString *msg) {
-        
-        if(code == GET_CART_CODE_ok)
-        {
-            for(NSDictionary *p in self.cartReal[CART_KEY_products])
-            {
-                NSNumber *pid = p[CART_ITEM_KEY_pid];
-                NSNumber *count = self.cartTemp[pid];
-                if(count)
-                    self.cartTemp[pid] = @(count.intValue + [p[CART_ITEM_KEY_size] intValue]);
+    if(USE_ANDROID_SHOPPING_CART_MECHANISM)
+    {
+        [self getLatestShoppingCart:^(int code, NSString *msg) {
+            
+            if(code == GET_CART_CODE_ok || code == GET_CART_CODE_cart_not_exist)
+            {                
+                
+                for(NSDictionary *p in self.cartReal[CART_KEY_products])
+                {
+                    NSNumber *pid = p[CART_ITEM_KEY_pid];
+                    NSNumber *count = self.cartTemp[pid];
+                    if(count)
+                    {
+                        [self addToTempCartProduct:pid count:@(count.intValue + [p[CART_ITEM_KEY_size] intValue])];
+                    }
+                    else
+                    {
+                        [self addToTempCartProduct:pid count:p[CART_ITEM_KEY_size]];
+                    }
+                }
+                
+                [self createShoppingCart:^(int code, NSString *msg) {
+                    
+                    if(success)
+                        success();
+                    
+                } failure:^(NSString *errorMessage, NSError *error) {
+                    
+                    if(failure)
+                        failure(errorMessage, error);
+                    
+                }];
+                
             }
-            
-            // change cartTemp to array
-            __block NSMutableArray *items = [NSMutableArray array];
-            [self.cartTemp enumerateKeysAndObjectsUsingBlock:^(id pid, id count, BOOL *stop) {
-                [items addObject:@{@"pid":pid, @"size":count}];
-            }];
-            
-            if(items.count == 0 && self.cartReal.count == 0)
+            else if(code == GET_CART_CODE_not_logged_in)
             {
-                if(failure)
-                    failure(@"購物車是空的", nil);
+                if(login)
+                    login();
             }
             else
             {
-                if(items.count)
+                if(failure)
+                    failure(msg, nil);
+            }
+            
+        } failure:^(NSString *errorMessage, NSError *error) {
+            
+            if(failure)
+                failure(errorMessage, error);
+            
+        }];
+    }
+    else
+    {
+        [self getLatestShoppingCart:^(int code, NSString *msg) {
+            
+            if(code == GET_CART_CODE_ok)
+            {
+                for(NSDictionary *p in self.cartReal[CART_KEY_products])
                 {
-                    [self updateShoppingCartWith:items index:0 success:^(int code, NSString *msg){
-                        
-                        self.cartTemp = nil;
-                        
-                        [self getLatestShoppingCart:^(int code, NSString *msg) {
+                    NSNumber *pid = p[CART_ITEM_KEY_pid];
+                    NSNumber *count = self.cartTemp[pid];
+                    if(count)
+                        self.cartTemp[pid] = @(count.intValue + [p[CART_ITEM_KEY_size] intValue]);
+                }
+                
+                // change cartTemp to array
+                __block NSMutableArray *items = [NSMutableArray array];
+                [self.cartTemp enumerateKeysAndObjectsUsingBlock:^(id pid, id count, BOOL *stop) {
+                    [items addObject:@{@"pid":pid, @"size":count}];
+                }];
+                
+                if(items.count == 0 && self.cartReal.count == 0)
+                {
+                    if(failure)
+                        failure(@"購物車是空的", nil);
+                }
+                else
+                {
+                    if(items.count)
+                    {
+                        [self updateShoppingCartWith:items index:0 success:^(int code, NSString *msg){
                             
-                            if(success)
-                                success();
+                            self.cartTemp = nil;
                             
+                            [self getLatestShoppingCart:^(int code, NSString *msg) {
+                                
+                                if(success)
+                                    success();
+                                
+                                
+                            } failure:^(NSString *errorMessage, NSError *error) {
+                                
+                                if(failure)
+                                    failure(errorMessage, error);
+                                
+                            }];
                             
                         } failure:^(NSString *errorMessage, NSError *error) {
                             
                             if(failure)
                                 failure(errorMessage, error);
-                            
                         }];
-                        
-                    } failure:^(NSString *errorMessage, NSError *error) {
-                        
-                        if(failure)
-                            failure(errorMessage, error);
-                    }];
-                }
-                else
-                {
-                    if(success)
-                        success();
+                    }
+                    else
+                    {
+                        if(success)
+                            success();
+                    }
                 }
             }
-        }
-        else if(code == GET_CART_CODE_cart_not_exist)
-        {
-            [self createShoppingCart:^(int code, NSString *msg) {
+            else if(code == GET_CART_CODE_cart_not_exist)
+            {
+                [self createShoppingCart:^(int code, NSString *msg) {
+                    
+                    if(success)
+                        success();
+                    
+                } failure:^(NSString *errorMessage, NSError *error) {
+                    
+                    if(failure)
+                        failure(errorMessage, error);
+                    
+                }];
                 
-                if(success)
-                    success();
-                
-            } failure:^(NSString *errorMessage, NSError *error) {
-                
+            }
+            else if(code == GET_CART_CODE_not_logged_in)
+            {
+                if(login)
+                    login();
+            }
+            else
+            {
                 if(failure)
-                    failure(errorMessage, error);
-                
-            }];
+                    failure(msg, nil);
+            }
             
-        }
-        else if(code == GET_CART_CODE_not_logged_in)
-        {
-            if(login)
-                login();
-        }
-        else
-        {
+        } failure:^(NSString *errorMessage, NSError *error) {
+            
             if(failure)
-                failure(msg, nil);
-        }
-        
-    } failure:^(NSString *errorMessage, NSError *error) {
-        
-        if(failure)
-            failure(errorMessage, error);
-        
-    }];
+                failure(errorMessage, error);
+            
+        }];
+    }
 }
 
 - (void)createShoppingCart:(void (^)(int code, NSString *msg))success

@@ -116,40 +116,67 @@
 
 #pragma mark - shopping cart related
 
+- (void)configCartViewData
+{
+    int itemCount = 0;
+    int amount = 0;
+    NSMutableArray *pidArray = [NSMutableArray array];
+    self.countDict = [NSMutableDictionary dictionary];
+    self.stockDict = [NSMutableDictionary dictionary];
+    
+    for(NSDictionary *p in self.appManager.cartReal[CART_KEY_products])
+    {
+        itemCount += [p[CART_ITEM_KEY_size] intValue];
+        amount += [p[CART_ITEM_KEY_price] intValue];
+        [pidArray addObject:p[CART_ITEM_KEY_pid]];
+        [self.countDict setObject:p[CART_ITEM_KEY_size] forKey:p[CART_ITEM_KEY_pid]];
+        [self.stockDict setObject:p[CART_ITEM_KEY_available] forKey:p[CART_ITEM_KEY_pid]];
+    }
+    
+    self.totalItemCountLabel.text = [@(itemCount) stringValue];
+    self.totalAmountLabel.text = [@(amount) stringValue];
+    self.shippingCostLabel.text = [self.appManager.cartReal[CART_KEY_shippingfees] stringValue];
+    self.freeShippingCostLabel.text = [self.appManager.cartReal[CART_KEY_noshippingfee] stringValue];
+    self.checkoutCostLabel.text = [self.appManager.cartReal[CART_KEY_total] stringValue];
+    
+    [self getProductDetailForShoppingCart:pidArray];
+    
+    [self.myTableView reloadData];
+}
+
 - (void)refreshShoppingCart
 {
-    [self.appManager getLatestShoppingCart:^(int code, NSString *msg) {
-        
-        int itemCount = 0;
-        int amount = 0;
-        NSMutableArray *pidArray = [NSMutableArray array];
-        self.countDict = [NSMutableDictionary dictionary];
-        self.stockDict = [NSMutableDictionary dictionary];
-        
-        for(NSDictionary *p in self.appManager.cartReal[CART_KEY_products])
-        {
-            itemCount += [p[CART_ITEM_KEY_size] intValue];
-            amount += [p[CART_ITEM_KEY_price] intValue];
-            [pidArray addObject:p[CART_ITEM_KEY_pid]];
-            [self.countDict setObject:p[CART_ITEM_KEY_size] forKey:p[CART_ITEM_KEY_pid]];
-            [self.stockDict setObject:p[CART_ITEM_KEY_available] forKey:p[CART_ITEM_KEY_pid]];
-        }
-        
-        self.totalItemCountLabel.text = [@(itemCount) stringValue];
-        self.totalAmountLabel.text = [@(amount) stringValue];
-        self.shippingCostLabel.text = [self.appManager.cartReal[CART_KEY_shippingfees] stringValue];
-        self.freeShippingCostLabel.text = [self.appManager.cartReal[CART_KEY_noshippingfee] stringValue];
-        self.checkoutCostLabel.text = [self.appManager.cartReal[CART_KEY_total] stringValue];
-        
-        [self getProductDetailForShoppingCart:pidArray];
-        
-        [self.myTableView reloadData];
-        
-    } failure:^(NSString *errorMessage, NSError *error) {
-        
-        [SVProgressHUD showErrorWithStatus:errorMessage];
-        
-    }];
+    if(USE_ANDROID_SHOPPING_CART_MECHANISM)
+    {
+        [self.appManager processTempCart:^{
+            
+            [self configCartViewData];
+            
+        } needLogin:^{
+            
+            [SVProgressHUD showErrorWithStatus:@"請先登入"];
+            
+        } failure:^(NSString *errorMessage, NSError *error) {
+            
+            [SVProgressHUD showErrorWithStatus:errorMessage];
+            
+        }];
+    }
+    else
+    {
+        [self.appManager getLatestShoppingCart:^(int code, NSString *msg) {
+            
+            [self configCartViewData];
+            
+        } failure:^(NSString *errorMessage, NSError *error) {
+            
+            [SVProgressHUD showErrorWithStatus:errorMessage];
+            
+        }];
+    }
+    
+    
+    
     
     /*
     [self.appManager processTempCart:^{

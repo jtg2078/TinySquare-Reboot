@@ -665,20 +665,23 @@
         
         [SVProgressHUD showWithStatus:msg];
         
-        [self.appManager addToRealCartProduct:pid
-                                        count:count
-                                    needLogin:^{ [SVProgressHUD showErrorWithStatus:@"請先登入"];}
-                                      success:^(int code, NSString *msg) { [SVProgressHUD showSuccessWithStatus:msg];}
-                                      failure:^(NSString *errorMessage, NSError *error) {
-                                          NSString *msg = [NSString stringWithFormat:@"%@ pid: %@", errorMessage, pid.stringValue];
-                                          [SVProgressHUD showErrorWithStatus:msg];
-                                      }];
-        
-        /*
-        [self.appManager addToTempCartProduct:[[self.modelManager detailInfo] numberForKey:@"productId"] count:@(1)];
-        
-        [SVProgressHUD showSuccessWithStatus:@"加到購物車"];
-         */
+        if(USE_ANDROID_SHOPPING_CART_MECHANISM)
+        {
+            [self.appManager addToTempCartProduct:[[self.modelManager detailInfo] numberForKey:@"productId"] count:@(1)];
+            
+            [SVProgressHUD showSuccessWithStatus:@"加到購物車成功"];
+        }
+        else
+        {
+            [self.appManager addToRealCartProduct:pid
+                                            count:count
+                                        needLogin:^{ [SVProgressHUD showErrorWithStatus:@"請先登入"];}
+                                          success:^(int code, NSString *msg) { [SVProgressHUD showSuccessWithStatus:msg];}
+                                          failure:^(NSString *errorMessage, NSError *error) {
+                                              NSString *msg = [NSString stringWithFormat:@"%@ pid: %@", errorMessage, pid.stringValue];
+                                              [SVProgressHUD showErrorWithStatus:msg];
+                                          }];
+        }
     }
 }
 

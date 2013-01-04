@@ -829,10 +829,9 @@
 				</array>
 			</object>
 			<object class="IBUIPickerView" id="252879725">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">290</int>
 				<string key="NSFrameSize">{320, 216}</string>
-				<reference key="NSSuperview"/>
 				<string key="NSReuseIdentifierKey">_NS:9</string>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 				<bool key="IBUIShowsSelectionIndicator">YES</bool>

@@ -332,6 +332,7 @@
                     
                     [self.shoppingCartVC viewWillAppear:NO];
                     self.shoppingCartVC.view.hidden = NO;
+                    
                 }
                 else
                 {

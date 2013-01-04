@@ -81,3 +81,4 @@ int const CHECK_OUT_unknown = 0;
 int const CHECK_OUT_success = 1;
 int const CHECK_OUT_failure = 2;
 
+BOOL const USE_ANDROID_SHOPPING_CART_MECHANISM = YES;

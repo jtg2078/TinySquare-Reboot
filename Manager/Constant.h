@@ -81,3 +81,4 @@ extern int const CHECK_OUT_unknown;
 extern int const CHECK_OUT_success;
 extern int const CHECK_OUT_failure;
 
+extern BOOL const USE_ANDROID_SHOPPING_CART_MECHANISM;
